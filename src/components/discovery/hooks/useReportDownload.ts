@@ -1,0 +1,97 @@
+import { DiscoveredAccount } from "./useDiscoveryData";
+
+interface ReportData {
+  title: string;
+  date: string;
+  summary: {
+    accountsFound: number;
+    totalValue: string;
+    atRiskAccounts: number;
+    institutionsScanned: number;
+  };
+  accounts: DiscoveredAccount[];
+  generatedAt: string;
+}
+
+export const useReportDownload = () => {
+  const downloadReport = (summaryStats: any, discoveredAccounts: DiscoveredAccount[]) => {
+    const reportData: ReportData = {
+      title: "Estate Discovery Report",
+      date: new Date().toLocaleDateString(),
+      summary: summaryStats,
+      accounts: discoveredAccounts,
+      generatedAt: new Date().toISOString()
+    };
+
+    const reportContent = `ESTATE DISCOVERY REPORT
+Generated: ${reportData.date}
+====================================
+
+EXECUTIVE SUMMARY
+• Accounts Found: ${reportData.summary.accountsFound}
+• Total Value: ${reportData.summary.totalValue}
+• At-Risk Accounts: ${reportData.summary.atRiskAccounts}
+• Institutions Scanned: ${reportData.summary.institutionsScanned}
+
+DISCOVERED ACCOUNTS
+====================================
+${reportData.accounts.map((account, index) => `
+${index + 1}. ${account.institution}
+   Type: ${account.type}
+   Account: ${account.accountNumber}
+   Balance: ${account.balance}
+   Status: ${account.status.toUpperCase()}
+   Risk Level: ${account.risk.toUpperCase()}
+   Last Activity: ${account.lastActivity}
+`).join('')}
+
+RECOMMENDATIONS
+====================================
+• Review dormant and forgotten accounts immediately
+• Consolidate high-risk accounts with estate planning attorney
+• Set up monitoring for all discovered assets
+• Update beneficiary information where applicable
+
+This report was generated using AI-powered estate discovery technology.
+For questions, contact your estate planning professional.`;
+
+    try {
+      // Try modern Web Share API first (works on mobile)
+      if (navigator.share && navigator.canShare) {
+        const file = new File([reportContent], `Estate_Discovery_Report_${new Date().toISOString().split('T')[0]}.txt`, {
+          type: 'text/plain',
+        });
+        
+        if (navigator.canShare({ files: [file] })) {
+          navigator.share({
+            files: [file],
+            title: 'Estate Discovery Report',
+            text: 'Your comprehensive estate discovery report'
+          });
+          return;
+        }
+      }
+      
+      // Fallback to traditional download
+      const blob = new Blob([reportContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Estate_Discovery_Report_${new Date().toISOString().split('T')[0]}.txt`;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Last resort: copy to clipboard
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(reportContent);
+        alert('Report copied to clipboard');
+      }
+    }
+  };
+
+  return { downloadReport };
+};
