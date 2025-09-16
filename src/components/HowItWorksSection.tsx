@@ -61,8 +61,8 @@ const HowItWorksSection = () => {
           </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-navy-deep mb-4 md:mb-6 font-black">How Legacy Ledger Works</h2>
           <p className="text-lg md:text-xl text-navy-light max-w-4xl mx-auto leading-relaxed">
-            Two cutting-edge pathways powered by artificial intelligence and blockchain technology 
-            to protect your family's financial future.
+            Two distinct service offerings: pre-planning digital estate organization for living clients, 
+            and posthumous asset identification and recovery services for estate administrators.
           </p>
         </div>
 
