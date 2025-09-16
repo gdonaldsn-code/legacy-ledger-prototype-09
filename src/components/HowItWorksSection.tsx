@@ -27,7 +27,7 @@ const HowItWorksSection = () => {
     {
       icon: Brain,
       title: "AI Deep Scan",
-      description: "Advanced machine learning algorithms scan 11,000+ financial institutions using proprietary data matching.",
+      description: "Advanced machine learning algorithms scan 11,000+ financial institutions and 30,000+ medical institutions using proprietary data matching.",
       highlight: "99.3% accuracy"
     },
     {
