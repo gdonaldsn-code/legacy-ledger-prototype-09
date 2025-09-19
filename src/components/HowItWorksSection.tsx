@@ -6,19 +6,19 @@ const HowItWorksSection = () => {
     {
       icon: Shield,
       title: "Secure Digital Vault",
-      description: "AI-encrypted storage for all financial accounts, passwords, and critical documents with military-grade security.",
+      description: "Secure encrypted storage for all financial accounts, passwords, and critical documents with military-grade security.",
       highlight: "256-bit encryption"
     },
     {
       icon: Brain,
       title: "Smart Executor Network",
       description: "Intelligent assignment system with multi-factor authentication and automated verification protocols.",
-      highlight: "Blockchain verified"
+      highlight: "Digitally verified"
     },
     {
       icon: Zap,
       title: "Automated Release Protocol",
-      description: "Advanced AI trigger system with legal validation ensures seamless access when your family needs it most.",
+      description: "Automated release system with legal validation ensures seamless access when your family needs it most.",
       highlight: "Instant activation"
     }
   ];
@@ -26,14 +26,14 @@ const HowItWorksSection = () => {
   const discoverySteps = [
     {
       icon: Brain,
-      title: "AI Deep Scan",
-      description: "Advanced machine learning algorithms scan 11,000+ financial institutions and 30,000+ medical institutions using proprietary data matching.",
+      title: "Comprehensive Digital Asset Search",
+      description: "Sophisticated search technology scans 11,000+ financial institutions and 30,000+ medical institutions using specialized identification processes.",
       highlight: "99.3% accuracy"
     },
     {
       icon: Sparkles,
       title: "Intelligence Report",
-      description: "Comprehensive AI-generated analysis with account details, estimated values, and legal action roadmaps.",
+      description: "Comprehensive digital analysis with account details, estimated values, and legal action roadmaps.",
       highlight: "Real-time data"
     },
     {
@@ -57,7 +57,7 @@ const HowItWorksSection = () => {
         <div className="text-center mb-12 md:mb-16 lg:mb-20 animate-slide-up">
           <div className="inline-flex items-center gap-3 bg-gradient-to-r from-electric-blue to-cyber-teal bg-clip-text text-transparent font-bold text-sm tracking-wider uppercase mb-4">
             <Zap className="h-4 w-4 text-electric-blue" />
-            Revolutionary Process
+            Our Process
           </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-navy-deep mb-4 md:mb-6 font-black">How Legacy Ledger Works</h2>
           <p className="text-lg md:text-xl text-navy-light max-w-4xl mx-auto leading-relaxed">
