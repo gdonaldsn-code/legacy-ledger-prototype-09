@@ -33,6 +33,24 @@ export const useDiscoveryData = (isOpen: boolean) => {
       risk: "low"
     },
     {
+      institution: "Blue Cross Blue Shield",
+      type: "Health Savings Account",
+      accountNumber: "****7890",
+      balance: "$8,650.00",
+      lastActivity: "2 weeks ago",
+      status: "active",
+      risk: "low"
+    },
+    {
+      institution: "UnitedHealth Group",
+      type: "Unclaimed Insurance Benefit",
+      accountNumber: "****2468",
+      balance: "$3,200.00",
+      lastActivity: "4 months ago",
+      status: "dormant",
+      risk: "medium"
+    },
+    {
       institution: "Coinbase",
       type: "Cryptocurrency Wallet",
       accountNumber: "****9012",
@@ -40,6 +58,15 @@ export const useDiscoveryData = (isOpen: boolean) => {
       lastActivity: "2 months ago", 
       status: "dormant",
       risk: "medium"
+    },
+    {
+      institution: "Memorial Hospital",
+      type: "Outstanding Medical Debt",
+      accountNumber: "****1357",
+      balance: "-$4,890.00",
+      lastActivity: "8 months ago",
+      status: "forgotten", 
+      risk: "high"
     },
     {
       institution: "Old National Bank",
@@ -60,10 +87,10 @@ export const useDiscoveryData = (isOpen: boolean) => {
   ];
 
   const summaryStats = {
-    accountsFound: 4,
-    totalValue: "$151,190.00",
-    atRiskAccounts: 1,
-    institutionsScanned: 12
+    accountsFound: 7,
+    totalValue: "$157,260.00",
+    atRiskAccounts: 2,
+    institutionsScanned: 41000
   };
 
   // Auto-advance scanning steps
