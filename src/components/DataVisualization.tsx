@@ -4,7 +4,7 @@ import { TrendingUp, DollarSign, Users, Clock } from 'lucide-react';
 const DataVisualization = () => {
   const stats = [
     { icon: DollarSign, value: '$30B+', label: 'Unclaimed Assets', color: 'from-electric-blue to-cyber-teal' },
-    { icon: Users, value: '3.4M', label: 'Annual Deaths', color: 'from-cyber-teal to-neon-purple' },
+    { icon: Users, value: '3.4M', label: 'Annual Deaths in the US', color: 'from-cyber-teal to-neon-purple' },
     { icon: TrendingUp, value: '87%', label: 'Have Digital Accounts', color: 'from-neon-purple to-electric-blue' },
     { icon: Clock, value: '6+', label: 'Months to Discover', color: 'from-electric-blue to-success-green' },
   ];

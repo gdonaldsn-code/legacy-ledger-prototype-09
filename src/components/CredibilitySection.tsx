@@ -31,7 +31,7 @@ const CredibilitySection = () => {
   ];
 
   const impactStats = [
-    { value: "3.4M", label: "Annual deaths requiring estate management", trend: "+2.3%" },
+    { value: "3.4M", label: "Annual deaths in the US requiring estate management", trend: "+2.3%" },
     { value: "87%", label: "Have complex digital financial footprints", trend: "+15%" },
     { value: "6+ months", label: "Average family discovery timeline", trend: "Decreasing" },
     { value: "45%", label: "Miss critical accounts without professional help", trend: "Alarming" }
