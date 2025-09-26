@@ -81,8 +81,7 @@ const HeroSection = () => {
                 {[
                   "Bank-Level Security",
                   "AI-Powered Discovery", 
-                  "Estate Attorney Validated",
-                  "HIPAA Compliant"
+                  "Estate Attorney Validated"
                 ].map((item, index) => (
                   <div key={index} className="flex items-center gap-2 md:gap-3 group">
                     <div className="w-2 h-2 bg-gradient-to-r from-electric-blue to-cyber-teal rounded-full group-hover:scale-150 transition-transform" />
