@@ -50,10 +50,10 @@ const HeroSection = () => {
               {/* Main headline */}
               <div className="space-y-4 md:space-y-6">
                 <h1 className="text-3xl md:text-5xl lg:text-6xl xl:text-7xl text-white leading-tight md:leading-[0.9] font-black">
-                  Discover Hidden
+                  Discover Hidden Wealth
                   <br />
                   <span className="relative">
-                    Digital Wealth
+                    Digital Assets
                     <div className="absolute -inset-1 md:-inset-2 bg-gradient-to-r from-electric-blue/20 to-cyber-teal/20 rounded-xl blur-xl" />
                   </span>
                 </h1>
