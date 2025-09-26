@@ -34,12 +34,10 @@ const LiveDemo = ({ isOpen, onClose }: LiveDemoProps) => {
     { name: "Wells Fargo", type: "Traditional Banking", scanning: false, found: false },
     { name: "Fidelity", type: "Investment Platform", scanning: false, found: false },
     { name: "Coinbase", type: "Cryptocurrency Exchange", scanning: false, found: false },
-    { name: "Blue Cross Blue Shield", type: "Health Insurance", scanning: false, found: false },
-    { name: "Kaiser Permanente", type: "Healthcare Provider", scanning: false, found: false },
-    { name: "UnitedHealth", type: "Medical Insurance", scanning: false, found: false },
-    { name: "Aetna", type: "Health Insurance", scanning: false, found: false },
     { name: "PayPal", type: "Digital Payments", scanning: false, found: false },
-    { name: "Robinhood", type: "Trading Platform", scanning: false, found: false }
+    { name: "Venmo", type: "Peer-to-Peer", scanning: false, found: false },
+    { name: "Robinhood", type: "Trading Platform", scanning: false, found: false },
+    { name: "Square Cash", type: "Digital Wallet", scanning: false, found: false }
   ];
 
   const [scanningInstitutions, setScanningInstitutions] = useState(institutions);
@@ -58,20 +56,6 @@ const LiveDemo = ({ isOpen, onClose }: LiveDemoProps) => {
       balance: "$45,670.00",
       status: "active", 
       lastActivity: "1 week ago"
-    },
-    {
-      institution: "Blue Cross Blue Shield",
-      type: "Health Savings Account",
-      balance: "$4,850.00",
-      status: "active",
-      lastActivity: "1 month ago"
-    },
-    {
-      institution: "Kaiser Permanente",
-      type: "Medical Debt Account",
-      balance: "-$2,340.00",
-      status: "outstanding",
-      lastActivity: "6 months ago"
     },
     {
       institution: "Coinbase",
@@ -186,7 +170,7 @@ const LiveDemo = ({ isOpen, onClose }: LiveDemoProps) => {
                 <div className="w-16 h-16 bg-gradient-to-r from-electric-blue to-cyber-teal rounded-full flex items-center justify-center mx-auto animate-pulse">
                   <Search className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-white">AI Scanning Financial & Medical Networks</h3>
+                <h3 className="text-xl font-semibold text-white">AI Scanning Financial Networks</h3>
                 <Progress value={progress} className="w-full" />
                 <p className="text-blue-soft text-sm">{progress}% Complete • {foundAccounts.length} accounts discovered</p>
               </div>
@@ -195,7 +179,7 @@ const LiveDemo = ({ isOpen, onClose }: LiveDemoProps) => {
               <div className="space-y-3">
                 <h4 className="text-lg font-semibold text-white flex items-center gap-2">
                   <Database className="h-5 w-5 text-electric-blue" />
-                  Scanning Financial & Medical Institutions
+                  Scanning Financial Institutions
                 </h4>
                 {scanningInstitutions.map((institution, index) => (
                   <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
