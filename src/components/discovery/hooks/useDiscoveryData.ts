@@ -54,7 +54,7 @@ export const useDiscoveryData = (isOpen: boolean) => {
 
   const scanningSteps = [
     "Scanning financial institutions...",
-    "Analyzing digital asset platforms...", 
+    "Analyzing asset platforms...", 
     "Cross-referencing public records...",
     "Generating comprehensive report..."
   ];

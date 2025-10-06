@@ -5,7 +5,7 @@ const WhyLegacySection = () => {
   const benefits = [
     {
       icon: DollarSign,
-      title: "Prevent Digital Asset Loss",
+      title: "Prevent Asset Loss",
       description: "AI-powered discovery prevents your family's digital wealth from disappearing into unclaimed property databases.",
       gradient: "from-electric-blue to-cyber-teal",
       highlight: "$45K avg. recovery"
