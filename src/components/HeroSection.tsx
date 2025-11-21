@@ -16,7 +16,7 @@ const HeroSection = () => {
   const [showDemo, setShowDemo] = useState(false);
 
   const handleStartDiscovery = () => {
-    navigate("/register");
+    setShowReport(true);
   };
 
   const handleViewDemo = () => {
