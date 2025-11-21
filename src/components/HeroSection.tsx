@@ -51,14 +51,14 @@ const HeroSection = () => {
 
               {/* Main headline */}
               <div className="space-y-4 md:space-y-6">
-                <h1 className="text-3xl md:text-5xl lg:text-6xl xl:text-7xl text-white leading-tight md:leading-[0.9] font-black">
-                  Discover Hidden Wealth
-                  <br />
-                  <span className="relative">
-                    Digital Assets
-                    <div className="absolute -inset-1 md:-inset-2 bg-gradient-to-r from-electric-blue/20 to-cyber-teal/20 rounded-xl blur-xl" />
-                  </span>
-                </h1>
+              <h1 className="text-3xl md:text-5xl lg:text-6xl xl:text-7xl text-white leading-tight md:leading-[0.9] font-black">
+                Discover Hidden Wealth
+                <br />
+                <span className="relative">
+                  Accounts & Assets
+                  <div className="absolute -inset-1 md:-inset-2 bg-gradient-to-r from-electric-blue/20 to-cyber-teal/20 rounded-xl blur-xl" />
+                </span>
+              </h1>
                 
                 <p className="text-lg md:text-xl lg:text-2xl text-blue-soft leading-relaxed max-w-2xl mx-auto lg:mx-0">
                   AI-powered discovery platform that finds hidden financial accounts and digital assets 
