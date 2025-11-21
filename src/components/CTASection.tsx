@@ -1,7 +1,10 @@
 import { ArrowRight, Phone, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const CTASection = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="py-16 md:py-20 lg:py-24 hero-gradient">
       <div className="container mx-auto px-4 md:px-6">
@@ -18,7 +21,7 @@ const CTASection = () => {
               <FileText className="h-6 w-6 md:h-8 md:w-8 text-trust-accent mx-auto mb-3 md:mb-4" />
               <h4 className="text-white font-semibold mb-2 text-sm md:text-base">Discovery Report</h4>
               <p className="text-blue-soft text-xs md:text-sm mb-3 md:mb-4">Get immediate help finding accounts</p>
-              <Button variant="comfort" size="sm" className="w-full text-xs md:text-sm py-2 md:py-3">
+              <Button onClick={() => navigate("/register")} variant="comfort" size="sm" className="w-full text-xs md:text-sm py-2 md:py-3">
                 Order Now - $299
               </Button>
             </div>
@@ -27,7 +30,7 @@ const CTASection = () => {
               <Phone className="h-6 w-6 md:h-8 md:w-8 text-trust-accent mx-auto mb-3 md:mb-4" />
               <h4 className="text-white font-semibold mb-2 text-sm md:text-base">Concierge Service</h4>
               <p className="text-blue-soft text-xs md:text-sm mb-3 md:mb-4">We handle everything for you</p>
-              <Button variant="hero" size="sm" className="w-full text-xs md:text-sm py-2 md:py-3">
+              <Button onClick={() => navigate("/register")} variant="hero" size="sm" className="w-full text-xs md:text-sm py-2 md:py-3">
                 Get Help - $699
               </Button>
             </div>
@@ -36,7 +39,7 @@ const CTASection = () => {
               <ArrowRight className="h-6 w-6 md:h-8 md:w-8 text-trust-accent mx-auto mb-3 md:mb-4" />
               <h4 className="text-white font-semibold mb-2 text-sm md:text-base">Legacy Protection</h4>
               <p className="text-blue-soft text-xs md:text-sm mb-3 md:mb-4">Plan ahead for your family</p>
-              <Button variant="comfort" size="sm" className="w-full text-xs md:text-sm py-2 md:py-3">
+              <Button onClick={() => navigate("/register")} variant="comfort" size="sm" className="w-full text-xs md:text-sm py-2 md:py-3">
                 Free Trial
               </Button>
             </div>
@@ -44,7 +47,7 @@ const CTASection = () => {
 
           {/* Main CTA */}
           <div className="space-y-3 md:space-y-4">
-            <Button variant="hero" size="lg" className="text-sm md:text-lg px-8 md:px-12 py-3 md:py-4">
+            <Button onClick={() => navigate("/register")} variant="hero" size="lg" className="text-sm md:text-lg px-8 md:px-12 py-3 md:py-4">
               Book a Free Consultation
               <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
             </Button>
