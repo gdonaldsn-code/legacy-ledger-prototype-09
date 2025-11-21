@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Shield } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import InteractiveBackground from "./InteractiveBackground";
 import DataVisualization from "./DataVisualization";
@@ -10,11 +11,12 @@ import heroImage from "@/assets/hero-sunrise.jpg";
 
 const HeroSection = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [showReport, setShowReport] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
 
   const handleStartDiscovery = () => {
-    setShowReport(true);
+    navigate("/register");
   };
 
   const handleViewDemo = () => {
