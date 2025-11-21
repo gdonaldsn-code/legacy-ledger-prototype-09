@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Camera, Upload, CheckCircle2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -60,6 +61,7 @@ type RegistrationFormValues = z.infer<typeof registrationSchema>;
 
 const Registration = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [selfiePreview, setSelfiePreview] = useState<string | null>(null);
   const [idPreview, setIdPreview] = useState<string | null>(null);
 
@@ -97,8 +99,13 @@ const Registration = () => {
 
     toast({
       title: "Registration Submitted",
-      description: "Your verification documents have been received and are being processed.",
+      description: "Your verification documents have been received. Starting discovery scan...",
     });
+
+    // Navigate to dashboard after a short delay
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 1500);
   };
 
   return (
