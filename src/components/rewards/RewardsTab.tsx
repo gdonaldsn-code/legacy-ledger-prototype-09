@@ -1,0 +1,177 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Plane, CreditCard, Hotel, Gift, Calendar, Star, Coins, TrendingUp } from "lucide-react";
+
+interface RewardsAccount {
+  id: string;
+  name: string;
+  type: "airline" | "hotel" | "credit-card" | "retail";
+  program: string;
+  balance: string;
+  value: string;
+  expirationWarning?: string;
+  monthlyPerks: string[];
+  icon: typeof Plane;
+}
+
+const rewardsAccounts: RewardsAccount[] = [
+  {
+    id: "1", name: "American Airlines", type: "airline", program: "AAdvantage",
+    balance: "47,500 miles", value: "~$712",
+    monthlyPerks: ["Priority boarding", "Free checked bag", "Admiral's Club access (2 passes/month)"],
+    icon: Plane
+  },
+  {
+    id: "2", name: "Delta Air Lines", type: "airline", program: "SkyMiles",
+    balance: "32,100 miles", value: "~$481",
+    expirationWarning: "Miles expire in 18 months without activity",
+    monthlyPerks: ["Sky Priority check-in", "Complimentary upgrades when available"],
+    icon: Plane
+  },
+  {
+    id: "3", name: "Marriott Bonvoy", type: "hotel", program: "Bonvoy Gold Elite",
+    balance: "89,200 points", value: "~$623",
+    monthlyPerks: ["25% bonus points on stays", "Room upgrade when available", "Late checkout (2pm)", "Welcome gift points"],
+    icon: Hotel
+  },
+  {
+    id: "4", name: "Chase Sapphire Reserve", type: "credit-card", program: "Ultimate Rewards",
+    balance: "125,000 points", value: "~$1,875",
+    monthlyPerks: ["$300 annual travel credit", "Priority Pass lounge access", "DoorDash DashPass membership", "$100 Global Entry/TSA credit"],
+    icon: CreditCard
+  },
+  {
+    id: "5", name: "Hilton Honors", type: "hotel", program: "Diamond Status",
+    balance: "156,800 points", value: "~$784",
+    monthlyPerks: ["Free breakfast", "Executive lounge access", "5th night free on award stays", "Room upgrade to suites"],
+    icon: Hotel
+  },
+  {
+    id: "6", name: "Amazon Prime Rewards", type: "retail", program: "Prime Visa",
+    balance: "18,450 points", value: "~$184",
+    monthlyPerks: ["5% back on Amazon purchases", "2% back at restaurants & gas stations", "No foreign transaction fees"],
+    icon: Gift
+  }
+];
+
+const getTypeColor = (type: RewardsAccount["type"]) => {
+  switch (type) {
+    case "airline": return "bg-blue-500/10 text-blue-400 border-blue-500/20";
+    case "hotel": return "bg-purple-500/10 text-purple-400 border-purple-500/20";
+    case "credit-card": return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+    case "retail": return "bg-orange-500/10 text-orange-400 border-orange-500/20";
+  }
+};
+
+const getTypeLabel = (type: RewardsAccount["type"]) => {
+  switch (type) {
+    case "airline": return "Airline";
+    case "hotel": return "Hotel";
+    case "credit-card": return "Credit Card";
+    case "retail": return "Retail";
+  }
+};
+
+export default function RewardsTab() {
+  const totalValue = rewardsAccounts.reduce((sum, account) => {
+    return sum + parseFloat(account.value.replace(/[^0-9.]/g, ""));
+  }, 0);
+  const totalPerks = rewardsAccounts.reduce((sum, account) => sum + account.monthlyPerks.length, 0);
+
+  return (
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-full bg-primary/20"><Coins className="h-6 w-6 text-primary" /></div>
+              <div>
+                <p className="text-sm text-muted-foreground">Total Points Value</p>
+                <p className="text-2xl font-bold text-foreground">${totalValue.toLocaleString()}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-full bg-accent/20"><Star className="h-6 w-6 text-accent-foreground" /></div>
+              <div>
+                <p className="text-sm text-muted-foreground">Active Accounts</p>
+                <p className="text-2xl font-bold text-foreground">{rewardsAccounts.length}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-secondary/50 to-secondary/30 border-secondary/40">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-full bg-secondary"><Gift className="h-6 w-6 text-secondary-foreground" /></div>
+              <div>
+                <p className="text-sm text-muted-foreground">Monthly Perks</p>
+                <p className="text-2xl font-bold text-foreground">{totalPerks} benefits</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-foreground">Your Rewards Accounts</h2>
+          <Badge variant="outline" className="gap-1"><TrendingUp className="h-3 w-3" />Auto-tracked</Badge>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {rewardsAccounts.map((account) => {
+            const IconComponent = account.icon;
+            return (
+              <Card key={account.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-muted"><IconComponent className="h-5 w-5 text-foreground" /></div>
+                      <div>
+                        <CardTitle className="text-base">{account.name}</CardTitle>
+                        <p className="text-sm text-muted-foreground">{account.program}</p>
+                      </div>
+                    </div>
+                    <Badge className={getTypeColor(account.type)} variant="outline">{getTypeLabel(account.type)}</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Balance</p>
+                      <p className="font-semibold text-foreground">{account.balance}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-muted-foreground">Est. Value</p>
+                      <p className="font-semibold text-primary">{account.value}</p>
+                    </div>
+                  </div>
+                  {account.expirationWarning && (
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-destructive/10 text-destructive text-sm">
+                      <Calendar className="h-4 w-4 flex-shrink-0" />{account.expirationWarning}
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+                      <Gift className="h-4 w-4" />Monthly Perks
+                    </p>
+                    <ul className="space-y-1.5">
+                      {account.monthlyPerks.map((perk, index) => (
+                        <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary mt-1">•</span>{perk}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
