@@ -59,6 +59,19 @@ interface Contact {
   icon: typeof Scale;
 }
 
+interface LegalDocument {
+  id: string;
+  name: string;
+  type: "poa" | "will" | "healthcare" | "trust" | "contract";
+  status: "current" | "needs-review" | "expired";
+  lastUpdated: string;
+  nextReview?: string;
+  attorney?: string;
+  location: string;
+  notes?: string;
+  icon: typeof FileText;
+}
+
 const rewardsAccounts: RewardsAccount[] = [
   {
     id: "1",
