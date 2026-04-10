@@ -21,7 +21,14 @@ import {
   Landmark,
   HeartPulse,
   ShieldCheck,
-  Users
+  Users,
+  FileText,
+  FileCheck,
+  FileLock2,
+  FileWarning,
+  Download,
+  Eye,
+  Clock
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
