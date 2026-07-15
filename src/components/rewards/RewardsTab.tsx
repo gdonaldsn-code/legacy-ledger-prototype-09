@@ -1,58 +1,19 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plane, CreditCard, Hotel, Gift, Calendar, Star, Coins, TrendingUp } from "lucide-react";
+import { Plane, CreditCard, Hotel, Gift, Calendar, Star, Coins, TrendingUp, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import type { Database } from "@/integrations/supabase/types";
 
-interface RewardsAccount {
-  id: string;
-  name: string;
-  type: "airline" | "hotel" | "credit-card" | "retail";
-  program: string;
-  balance: string;
-  value: string;
-  expirationWarning?: string;
-  monthlyPerks: string[];
-  icon: typeof Plane;
-}
+type RewardsAccount = Database["public"]["Tables"]["rewards_accounts"]["Row"];
 
-const rewardsAccounts: RewardsAccount[] = [
-  {
-    id: "1", name: "American Airlines", type: "airline", program: "AAdvantage",
-    balance: "47,500 miles", value: "~$712",
-    monthlyPerks: ["Priority boarding", "Free checked bag", "Admiral's Club access (2 passes/month)"],
-    icon: Plane
-  },
-  {
-    id: "2", name: "Delta Air Lines", type: "airline", program: "SkyMiles",
-    balance: "32,100 miles", value: "~$481",
-    expirationWarning: "Miles expire in 18 months without activity",
-    monthlyPerks: ["Sky Priority check-in", "Complimentary upgrades when available"],
-    icon: Plane
-  },
-  {
-    id: "3", name: "Marriott Bonvoy", type: "hotel", program: "Bonvoy Gold Elite",
-    balance: "89,200 points", value: "~$623",
-    monthlyPerks: ["25% bonus points on stays", "Room upgrade when available", "Late checkout (2pm)", "Welcome gift points"],
-    icon: Hotel
-  },
-  {
-    id: "4", name: "Chase Sapphire Reserve", type: "credit-card", program: "Ultimate Rewards",
-    balance: "125,000 points", value: "~$1,875",
-    monthlyPerks: ["$300 annual travel credit", "Priority Pass lounge access", "DoorDash DashPass membership", "$100 Global Entry/TSA credit"],
-    icon: CreditCard
-  },
-  {
-    id: "5", name: "Hilton Honors", type: "hotel", program: "Diamond Status",
-    balance: "156,800 points", value: "~$784",
-    monthlyPerks: ["Free breakfast", "Executive lounge access", "5th night free on award stays", "Room upgrade to suites"],
-    icon: Hotel
-  },
-  {
-    id: "6", name: "Amazon Prime Rewards", type: "retail", program: "Prime Visa",
-    balance: "18,450 points", value: "~$184",
-    monthlyPerks: ["5% back on Amazon purchases", "2% back at restaurants & gas stations", "No foreign transaction fees"],
-    icon: Gift
-  }
-];
+const typeIcon: Record<RewardsAccount["type"], typeof Plane> = {
+  airline: Plane,
+  hotel: Hotel,
+  "credit-card": CreditCard,
+  retail: Gift,
+};
 
 const getTypeColor = (type: RewardsAccount["type"]) => {
   switch (type) {
@@ -73,10 +34,43 @@ const getTypeLabel = (type: RewardsAccount["type"]) => {
 };
 
 export default function RewardsTab() {
-  const totalValue = rewardsAccounts.reduce((sum, account) => {
-    return sum + parseFloat(account.value.replace(/[^0-9.]/g, ""));
-  }, 0);
-  const totalPerks = rewardsAccounts.reduce((sum, account) => sum + account.monthlyPerks.length, 0);
+  const { user } = useAuth();
+  const [accounts, setAccounts] = useState<RewardsAccount[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+
+    supabase
+      .from("rewards_accounts")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true })
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          console.error("Failed to load rewards accounts", error);
+        }
+        setAccounts(data ?? []);
+        setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  const totalValue = accounts.reduce((sum, account) => sum + Number(account.estimated_value), 0);
+  const totalPerks = accounts.reduce((sum, account) => sum + account.monthly_perks.length, 0);
 
   return (
     <div className="space-y-8">
@@ -98,7 +92,7 @@ export default function RewardsTab() {
               <div className="p-3 rounded-full bg-accent/20"><Star className="h-6 w-6 text-accent-foreground" /></div>
               <div>
                 <p className="text-sm text-muted-foreground">Active Accounts</p>
-                <p className="text-2xl font-bold text-foreground">{rewardsAccounts.length}</p>
+                <p className="text-2xl font-bold text-foreground">{accounts.length}</p>
               </div>
             </div>
           </CardContent>
@@ -121,56 +115,67 @@ export default function RewardsTab() {
           <h2 className="text-lg font-semibold text-foreground">Your Rewards Accounts</h2>
           <Badge variant="outline" className="gap-1"><TrendingUp className="h-3 w-3" />Auto-tracked</Badge>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {rewardsAccounts.map((account) => {
-            const IconComponent = account.icon;
-            return (
-              <Card key={account.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-muted"><IconComponent className="h-5 w-5 text-foreground" /></div>
+        {accounts.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center text-muted-foreground">
+              <Coins className="h-10 w-10 mx-auto mb-3 opacity-50" />
+              No rewards accounts yet.
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {accounts.map((account) => {
+              const IconComponent = typeIcon[account.type];
+              return (
+                <Card key={account.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-muted"><IconComponent className="h-5 w-5 text-foreground" /></div>
+                        <div>
+                          <CardTitle className="text-base">{account.name}</CardTitle>
+                          <p className="text-sm text-muted-foreground">{account.program}</p>
+                        </div>
+                      </div>
+                      <Badge className={getTypeColor(account.type)} variant="outline">{getTypeLabel(account.type)}</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                       <div>
-                        <CardTitle className="text-base">{account.name}</CardTitle>
-                        <p className="text-sm text-muted-foreground">{account.program}</p>
+                        <p className="text-sm text-muted-foreground">Balance</p>
+                        <p className="font-semibold text-foreground">{account.balance}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Est. Value</p>
+                        <p className="font-semibold text-primary">
+                          ~${Number(account.estimated_value).toLocaleString()}
+                        </p>
                       </div>
                     </div>
-                    <Badge className={getTypeColor(account.type)} variant="outline">{getTypeLabel(account.type)}</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    {account.expiration_warning && (
+                      <div className="flex items-center gap-2 p-2 rounded-lg bg-destructive/10 text-destructive text-sm">
+                        <Calendar className="h-4 w-4 flex-shrink-0" />{account.expiration_warning}
+                      </div>
+                    )}
                     <div>
-                      <p className="text-sm text-muted-foreground">Balance</p>
-                      <p className="font-semibold text-foreground">{account.balance}</p>
+                      <p className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+                        <Gift className="h-4 w-4" />Monthly Perks
+                      </p>
+                      <ul className="space-y-1.5">
+                        {account.monthly_perks.map((perk, index) => (
+                          <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                            <span className="text-primary mt-1">•</span>{perk}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Est. Value</p>
-                      <p className="font-semibold text-primary">{account.value}</p>
-                    </div>
-                  </div>
-                  {account.expirationWarning && (
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-destructive/10 text-destructive text-sm">
-                      <Calendar className="h-4 w-4 flex-shrink-0" />{account.expirationWarning}
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                      <Gift className="h-4 w-4" />Monthly Perks
-                    </p>
-                    <ul className="space-y-1.5">
-                      {account.monthlyPerks.map((perk, index) => (
-                        <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
-                          <span className="text-primary mt-1">•</span>{perk}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

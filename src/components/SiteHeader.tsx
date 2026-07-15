@@ -51,6 +51,9 @@ const SiteHeader = ({ actions }: SiteHeaderProps) => {
           ) : (
             <>
               <Button variant="ghost" size="sm" asChild>
+                <Link to="/pricing">Pricing</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
                 <Link to="/login">Sign In</Link>
               </Button>
               <Button variant="default" size="sm" asChild>

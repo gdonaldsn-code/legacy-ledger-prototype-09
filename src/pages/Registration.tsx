@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Camera, Upload, CheckCircle2, Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -65,6 +65,9 @@ const fileExtension = (file: File) => file.name.split(".").pop() || "jpg";
 const Registration = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const intentParam = searchParams.get("intent");
+  const intent = intentParam === "planning" || intentParam === "discovery" ? intentParam : null;
   const [selfiePreview, setSelfiePreview] = useState<string | null>(null);
   const [idPreview, setIdPreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -107,6 +110,7 @@ const Registration = () => {
         data: {
           estate_planning_status: data.estatePlanning,
           credit_pull_authorized: data.authorizeCreditPull,
+          intent,
         },
       },
     });
@@ -185,6 +189,16 @@ const Registration = () => {
           <p className="text-muted-foreground text-lg">
             Complete verification to secure your Legacy Ledger account
           </p>
+          {intent === "planning" && (
+            <p className="text-sm text-primary font-medium mt-3">
+              Setting up Legacy Protection to plan ahead for your family.
+            </p>
+          )}
+          {intent === "discovery" && (
+            <p className="text-sm text-primary font-medium mt-3">
+              Setting up account discovery to help find a loved one's assets.
+            </p>
+          )}
         </div>
 
         <div className="card-gradient rounded-lg shadow-elevated p-8 backdrop-blur-sm border border-border">

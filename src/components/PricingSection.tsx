@@ -1,7 +1,10 @@
 import { Check, Star, Shield, Zap, Brain, Rocket, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const PricingSection = () => {
+  const navigate = useNavigate();
+
   const plans = [
     {
       name: "AI Discovery Report",
@@ -149,9 +152,10 @@ const PricingSection = () => {
 
                 {/* CTA Button */}
                 <div className="mt-auto">
-                  <Button 
-                    variant={plan.popular ? "quantum" : "hero"} 
-                    size="lg" 
+                  <Button
+                    onClick={() => navigate("/register")}
+                    variant={plan.popular ? "quantum" : "hero"}
+                    size="lg"
                     className="w-full group text-sm md:text-base py-3 md:py-4"
                   >
                     {plan.cta}
@@ -189,9 +193,11 @@ const PricingSection = () => {
           <div className="space-y-4">
             <h3 className="text-white text-2xl font-bold">Need Enterprise Solutions?</h3>
             <p className="text-blue-soft">Custom AI integration for law firms, financial advisors, and estate planning professionals.</p>
-            <Button variant="glass" size="lg" className="group">
+            <Button variant="glass" size="lg" className="group" asChild>
+              <a href="mailto:support@legacyledger.xyz">
               Contact Enterprise Team
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </a>
             </Button>
           </div>
         </div>

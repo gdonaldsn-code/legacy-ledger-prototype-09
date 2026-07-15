@@ -1,5 +1,6 @@
 import SiteHeader from "@/components/SiteHeader";
 import HeroSection from "@/components/HeroSection";
+import PersonaFork from "@/components/PersonaFork";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import PricingSection from "@/components/PricingSection";
 import CredibilitySection from "@/components/CredibilitySection";
@@ -12,6 +13,7 @@ const Index = () => {
     <div className="min-h-screen">
       <SiteHeader />
       <HeroSection />
+      <PersonaFork />
       <HowItWorksSection />
       <PricingSection />
       <CredibilitySection />

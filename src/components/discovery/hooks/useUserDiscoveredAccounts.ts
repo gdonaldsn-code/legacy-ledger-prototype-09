@@ -33,40 +33,50 @@ export const useUserDiscoveredAccounts = (scanStarted: boolean) => {
   const [accounts, setAccounts] = useState<DiscoveredAccount[]>([]);
   const [fetched, setFetched] = useState(false);
 
-  useEffect(() => {
-    if (!scanStarted || !user) return;
-
-    let cancelled = false;
-
-    supabase
+  const refetch = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
       .from("discovered_accounts")
       .select("*")
       .eq("user_id", user.id)
-      .order("created_at", { ascending: true })
-      .then(({ data, error }) => {
-        if (cancelled) return;
-        if (error) {
-          console.error("Failed to load discovered accounts", error);
-        }
-        setAccounts(
-          (data ?? []).map((row) => ({
-            institution: row.institution,
-            type: row.account_type,
-            accountNumber: row.account_number_mask ?? "",
-            balance: new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
-              row.balance
-            ),
-            lastActivity: formatRelativeTime(row.last_activity_at),
-            status: row.status,
-            risk: row.risk,
-          }))
-        );
-        setFetched(true);
-      });
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      console.error("Failed to load discovered accounts", error);
+      return;
+    }
+
+    setAccounts(
+      (data ?? []).map((row) => ({
+        id: row.id,
+        institution: row.institution,
+        type: row.account_type,
+        accountNumber: row.account_number_mask ?? "",
+        balance: new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
+          row.balance
+        ),
+        lastActivity: formatRelativeTime(row.last_activity_at),
+        status: row.status,
+        risk: row.risk,
+        beneficiaryStatus: row.beneficiary_status,
+        beneficiaryNames: row.beneficiary_names,
+        beneficiaryLastReviewed: row.beneficiary_last_reviewed,
+      }))
+    );
+  };
+
+  useEffect(() => {
+    if (!scanStarted || !user) return;
+    let cancelled = false;
+
+    refetch().then(() => {
+      if (!cancelled) setFetched(true);
+    });
 
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scanStarted, user]);
 
   // Step through the scanning animation while the fetch is in flight.
@@ -101,5 +111,6 @@ export const useUserDiscoveredAccounts = (scanStarted: boolean) => {
     scanningSteps,
     summaryStats,
     isComplete,
+    refetch,
   };
 };

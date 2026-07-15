@@ -15,6 +15,7 @@ export interface Database {
           credit_pull_authorized: boolean;
           selfie_path: string | null;
           government_id_path: string | null;
+          intent: 'planning' | 'discovery' | null;
           created_at: string;
           updated_at: string;
         };
@@ -32,6 +33,9 @@ export interface Database {
           last_activity_at: string | null;
           status: 'active' | 'dormant' | 'forgotten';
           risk: 'low' | 'medium' | 'high';
+          beneficiary_status: 'confirmed' | 'needs_review' | 'missing' | 'unknown';
+          beneficiary_names: string | null;
+          beneficiary_last_reviewed: string | null;
           created_at: string;
         };
         Insert: Partial<Database['public']['Tables']['discovered_accounts']['Row']> & {
@@ -82,6 +86,28 @@ export interface Database {
           doc_type: 'poa' | 'will' | 'healthcare' | 'trust' | 'contract';
         };
         Update: Partial<Database['public']['Tables']['legal_documents']['Row']>;
+      };
+      rewards_accounts: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          type: 'airline' | 'hotel' | 'credit-card' | 'retail';
+          program: string;
+          balance: string;
+          estimated_value: number;
+          expiration_warning: string | null;
+          monthly_perks: string[];
+          created_at: string;
+        };
+        Insert: Partial<Database['public']['Tables']['rewards_accounts']['Row']> & {
+          user_id: string;
+          name: string;
+          type: 'airline' | 'hotel' | 'credit-card' | 'retail';
+          program: string;
+          balance: string;
+        };
+        Update: Partial<Database['public']['Tables']['rewards_accounts']['Row']>;
       };
     };
     Views: Record<string, never>;

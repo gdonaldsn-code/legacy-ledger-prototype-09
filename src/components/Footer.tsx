@@ -1,4 +1,5 @@
 import { Shield, Mail, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const Footer = () => {
@@ -13,12 +14,11 @@ const Footer = () => {
               <span className="text-2xl font-bold">Legacy Ledger</span>
             </div>
             <p className="text-blue-soft mb-6 leading-relaxed max-w-md">
-              Helping families discover and manage financial accounts with dignity, security, and peace of mind 
+              Helping families discover and manage financial accounts with dignity, security, and peace of mind
               during life's most important transitions.
             </p>
             <div className="text-blue-soft text-sm">
-              <p className="mb-2">🏛️ Backed by estate attorneys & fintech experts</p>
-              <p>🔒 Bank-level security & HIPAA compliance</p>
+              <p>🔒 Bank-level security</p>
             </div>
           </div>
 
@@ -26,10 +26,10 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Services</h4>
             <ul className="space-y-2 text-blue-soft">
-              <li><a href="#" className="hover:text-white transition-colors">Discovery Report</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Concierge Closure</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Legacy Protection</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">How It Works</a></li>
+              <li><Link to="/find-accounts" className="hover:text-white transition-colors">Discovery Report</Link></li>
+              <li><Link to="/find-accounts" className="hover:text-white transition-colors">Concierge Closure</Link></li>
+              <li><Link to="/plan-ahead" className="hover:text-white transition-colors">Legacy Protection</Link></li>
+              <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
             </ul>
           </div>
 
@@ -37,10 +37,7 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-blue-soft">
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">FAQs</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+              <li><a href="mailto:support@legacyledger.xyz" className="hover:text-white transition-colors">Contact Us</a></li>
             </ul>
           </div>
         </div>
@@ -79,7 +76,7 @@ const Footer = () => {
               </div>
             </div>
             <div className="text-blue-soft text-sm">
-              © 2024 Legacy Ledger. All rights reserved.
+              © {new Date().getFullYear()} Legacy Ledger. All rights reserved.
             </div>
           </div>
         </div>

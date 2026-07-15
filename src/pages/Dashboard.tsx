@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, Calendar, TrendingUp, Shield, Zap } from "lucide-react";
+import { Download, Calendar, TrendingUp, Shield, Zap, AlertTriangle } from "lucide-react";
 import { useUserDiscoveredAccounts } from "@/components/discovery/hooks/useUserDiscoveredAccounts";
 import { useReportDownload } from "@/components/discovery/hooks/useReportDownload";
 import ScanningProgress from "@/components/discovery/ScanningProgress";
@@ -11,8 +11,12 @@ import SiteHeader from "@/components/SiteHeader";
 
 const Dashboard = () => {
   const [scanStarted, setScanStarted] = useState(false);
-  const { currentStep, discoveredAccounts, scanningSteps, summaryStats, isComplete } = useUserDiscoveredAccounts(scanStarted);
+  const { currentStep, discoveredAccounts, scanningSteps, summaryStats, isComplete, refetch } = useUserDiscoveredAccounts(scanStarted);
   const { downloadReport } = useReportDownload();
+
+  const accountsNeedingBeneficiary = discoveredAccounts.filter(
+    (a) => a.beneficiaryStatus === "missing" || a.beneficiaryStatus === "needs_review"
+  ).length;
 
   const handleDownloadReport = () => {
     downloadReport(summaryStats, discoveredAccounts);
@@ -163,9 +167,26 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 {discoveredAccounts.length > 0 ? (
-                  <div className="bg-gradient-to-br from-navy-deep to-navy-medium rounded-xl p-4">
-                    <AccountsList discoveredAccounts={discoveredAccounts} />
-                  </div>
+                  <>
+                    {accountsNeedingBeneficiary > 0 && (
+                      <div className="flex items-start gap-3 p-4 mb-4 rounded-lg border border-warning-amber/30 bg-warning-amber/10">
+                        <AlertTriangle className="h-5 w-5 text-warning-amber mt-0.5 flex-shrink-0" />
+                        <div className="text-sm">
+                          <p className="font-medium text-foreground">
+                            {accountsNeedingBeneficiary} of {discoveredAccounts.length} accounts may need beneficiary attention
+                          </p>
+                          <p className="text-muted-foreground">
+                            Accounts without a current beneficiary or transfer-on-death designation
+                            typically go through probate instead of passing directly to your family.
+                            Click an account's beneficiary badge below to review it.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    <div className="bg-gradient-to-br from-navy-deep to-navy-medium rounded-xl p-4">
+                      <AccountsList discoveredAccounts={discoveredAccounts} onBeneficiaryUpdated={refetch} />
+                    </div>
+                  </>
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
                     <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />

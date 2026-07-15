@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 export interface DiscoveredAccount {
+  id?: string;
   institution: string;
   type: string;
   accountNumber: string;
@@ -8,6 +9,10 @@ export interface DiscoveredAccount {
   lastActivity: string;
   status: "active" | "dormant" | "forgotten";
   risk: "low" | "medium" | "high";
+  /** Only populated for real (logged-in) accounts — absent on the public demo data. */
+  beneficiaryStatus?: "confirmed" | "needs_review" | "missing" | "unknown";
+  beneficiaryNames?: string | null;
+  beneficiaryLastReviewed?: string | null;
 }
 
 export const useDiscoveryData = (isOpen: boolean) => {

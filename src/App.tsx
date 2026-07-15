@@ -10,6 +10,9 @@ import Registration from "./pages/Registration";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import RewardsPerks from "./pages/RewardsPerks";
+import Pricing from "./pages/Pricing";
+import PlanAhead from "./pages/PlanAhead";
+import FindAccounts from "./pages/FindAccounts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +28,9 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/register" element={<Registration />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/plan-ahead" element={<PlanAhead />} />
+            <Route path="/find-accounts" element={<FindAccounts />} />
             <Route
               path="/dashboard"
               element={

@@ -2,12 +2,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shield, CreditCard, Coins } from "lucide-react";
 import { DiscoveredAccount } from "./hooks/useDiscoveryData";
+import BeneficiaryBadge from "./BeneficiaryBadge";
 
 interface AccountsListProps {
   discoveredAccounts: DiscoveredAccount[];
+  onBeneficiaryUpdated?: () => void;
 }
 
-const AccountsList = ({ discoveredAccounts }: AccountsListProps) => {
+const AccountsList = ({ discoveredAccounts, onBeneficiaryUpdated }: AccountsListProps) => {
   return (
     <div>
       <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
@@ -33,22 +35,33 @@ const AccountsList = ({ discoveredAccounts }: AccountsListProps) => {
                   <p className="text-xs text-blue-soft/70">Last activity: {account.lastActivity}</p>
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-right space-y-2">
                 <p className="text-lg font-bold text-white">{account.balance}</p>
-                <div className="flex items-center gap-2">
-                  <Badge 
+                <div className="flex items-center gap-2 justify-end">
+                  <Badge
                     variant={account.status === "active" ? "default" : account.status === "dormant" ? "secondary" : "destructive"}
                     className="text-xs"
                   >
                     {account.status}
                   </Badge>
-                  <Badge 
+                  <Badge
                     variant={account.risk === "low" ? "default" : account.risk === "medium" ? "secondary" : "destructive"}
                     className="text-xs"
                   >
                     {account.risk} risk
                   </Badge>
                 </div>
+                {account.beneficiaryStatus && (
+                  <div className="flex justify-end">
+                    <BeneficiaryBadge
+                      accountId={account.id}
+                      institution={account.institution}
+                      status={account.beneficiaryStatus}
+                      names={account.beneficiaryNames}
+                      onUpdated={onBeneficiaryUpdated}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </Card>
