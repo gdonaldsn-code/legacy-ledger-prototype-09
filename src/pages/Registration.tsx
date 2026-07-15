@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Camera, Upload, CheckCircle2 } from "lucide-react";
+import { Camera, Upload, CheckCircle2, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,56 +19,62 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import SiteHeader from "@/components/SiteHeader";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-const registrationSchema = z.object({
-  email: z.string().trim().email({ message: "Invalid email address" }).max(255),
-  selfie: z
-    .custom<FileList>()
-    .refine((files) => files?.length > 0, "Selfie photo is required")
-    .refine(
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-      "Image must be less than 5MB"
-    )
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported"
-    ),
-  governmentId: z
-    .custom<FileList>()
-    .refine((files) => files?.length > 0, "Government ID is required")
-    .refine(
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-      "Image must be less than 5MB"
-    )
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported"
-    ),
-  authorizeCreditPull: z
-    .boolean()
-    .refine((val) => val === true, {
+const registrationSchema = z
+  .object({
+    email: z.string().trim().email({ message: "Invalid email address" }).max(255),
+    password: z.string().min(8, { message: "Password must be at least 8 characters" }),
+    confirmPassword: z.string(),
+    selfie: z
+      .custom<FileList>()
+      .refine((files) => files?.length > 0, "Selfie photo is required")
+      .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, "Image must be less than 5MB")
+      .refine(
+        (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+        "Only .jpg, .jpeg, .png and .webp formats are supported"
+      ),
+    governmentId: z
+      .custom<FileList>()
+      .refine((files) => files?.length > 0, "Government ID is required")
+      .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, "Image must be less than 5MB")
+      .refine(
+        (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+        "Only .jpg, .jpeg, .png and .webp formats are supported"
+      ),
+    authorizeCreditPull: z.boolean().refine((val) => val === true, {
       message: "You must authorize the soft credit pull to proceed",
     }),
-  estatePlanning: z.enum(["estate", "will", "both", "neither"], {
-    required_error: "Please select an option",
-  }),
-});
+    estatePlanning: z.enum(["estate", "will", "both", "neither"], {
+      required_error: "Please select an option",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 type RegistrationFormValues = z.infer<typeof registrationSchema>;
+
+const fileExtension = (file: File) => file.name.split(".").pop() || "jpg";
 
 const Registration = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [selfiePreview, setSelfiePreview] = useState<string | null>(null);
   const [idPreview, setIdPreview] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const form = useForm<RegistrationFormValues>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
       email: "",
+      password: "",
+      confirmPassword: "",
       authorizeCreditPull: false,
     },
   });
@@ -88,28 +94,91 @@ const Registration = () => {
     }
   };
 
-  const onSubmit = (data: RegistrationFormValues) => {
-    console.log("Registration data:", {
+  const onSubmit = async (data: RegistrationFormValues) => {
+    setSubmitting(true);
+
+    // 1. Create the account. estate_planning_status / credit_pull_authorized ride
+    // along as user metadata so the on_auth_user_created trigger can seed the
+    // profile row without a second round-trip.
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: data.email,
-      selfie: data.selfie[0].name,
-      governmentId: data.governmentId[0].name,
-      authorizeCreditPull: data.authorizeCreditPull,
-      estatePlanning: data.estatePlanning,
+      password: data.password,
+      options: {
+        data: {
+          estate_planning_status: data.estatePlanning,
+          credit_pull_authorized: data.authorizeCreditPull,
+        },
+      },
     });
+
+    if (signUpError) {
+      toast({
+        title: "Registration failed",
+        description: signUpError.message,
+        variant: "destructive",
+      });
+      setSubmitting(false);
+      return;
+    }
+
+    const user = signUpData.user;
+
+    if (!signUpData.session) {
+      // Project has "Confirm email" turned on — there's no session yet, so we
+      // can't upload to the user-scoped storage bucket or reach /dashboard.
+      toast({
+        title: "Check your email",
+        description:
+          "We sent a confirmation link to finish setting up your account. Verification photos can be added once you're signed in.",
+      });
+      setSubmitting(false);
+      navigate("/");
+      return;
+    }
+
+    // 2. Upload verification documents to the private bucket, scoped by user id.
+    if (user) {
+      const selfieFile = data.selfie[0];
+      const idFile = data.governmentId[0];
+
+      const [selfieUpload, idUpload] = await Promise.all([
+        supabase.storage
+          .from("verification-documents")
+          .upload(`${user.id}/selfie.${fileExtension(selfieFile)}`, selfieFile, { upsert: true }),
+        supabase.storage
+          .from("verification-documents")
+          .upload(`${user.id}/government-id.${fileExtension(idFile)}`, idFile, { upsert: true }),
+      ]);
+
+      if (selfieUpload.error || idUpload.error) {
+        toast({
+          title: "Account created, but a document upload failed",
+          description: (selfieUpload.error || idUpload.error)?.message,
+          variant: "destructive",
+        });
+      } else {
+        await supabase
+          .from("profiles")
+          .update({
+            selfie_path: selfieUpload.data.path,
+            government_id_path: idUpload.data.path,
+          })
+          .eq("id", user.id);
+      }
+    }
 
     toast({
       title: "Registration Submitted",
       description: "Your verification documents have been received. Starting discovery scan...",
     });
 
-    // Navigate to dashboard after a short delay
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1500);
+    setSubmitting(false);
+    navigate("/dashboard");
   };
 
   return (
     <div className="min-h-screen comfort-gradient">
+      <SiteHeader />
       <div className="container max-w-3xl mx-auto px-4 py-12">
         <div className="mb-12 text-center">
           <h1 className="mb-4">Account Registration</h1>
@@ -129,19 +198,43 @@ const Registration = () => {
                   <FormItem>
                     <FormLabel>Email Address</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="your.email@example.com"
-                        type="email"
-                        {...field}
-                      />
+                      <Input placeholder="your.email@example.com" type="email" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      We'll use this email for account notifications
-                    </FormDescription>
+                    <FormDescription>We'll use this email for account notifications</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* Password Fields */}
+              <div className="grid sm:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="At least 8 characters" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="Re-enter your password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               {/* Selfie Upload */}
               <FormField
@@ -247,9 +340,7 @@ const Registration = () => {
                         )}
                       </div>
                     </FormControl>
-                    <FormDescription>
-                      Driver's license, passport, or state ID
-                    </FormDescription>
+                    <FormDescription>Driver's license, passport, or state ID</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -263,19 +354,13 @@ const Registration = () => {
                   <FormItem className="border border-border rounded-lg p-6 bg-background/50">
                     <div className="flex items-start space-x-3">
                       <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          Authorization for Soft Credit Pull
-                        </FormLabel>
+                        <FormLabel>Authorization for Soft Credit Pull</FormLabel>
                         <FormDescription className="text-sm">
-                          I authorize Legacy Ledger to perform a soft credit inquiry
-                          for verification purposes. This will not affect my credit
-                          score.
+                          I authorize Legacy Ledger to perform a soft credit inquiry for
+                          verification purposes. This will not affect my credit score.
                         </FormDescription>
                       </div>
                     </div>
@@ -325,9 +410,7 @@ const Registration = () => {
                         </div>
                       </RadioGroup>
                     </FormControl>
-                    <FormDescription>
-                      This helps us provide personalized guidance
-                    </FormDescription>
+                    <FormDescription>This helps us provide personalized guidance</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -335,12 +418,8 @@ const Registration = () => {
 
               {/* Submit Button */}
               <div className="pt-6">
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full"
-                  variant="default"
-                >
+                <Button type="submit" size="lg" className="w-full" variant="default" disabled={submitting}>
+                  {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Complete Registration
                 </Button>
               </div>
@@ -351,8 +430,8 @@ const Registration = () => {
         {/* Privacy Notice */}
         <div className="mt-8 text-center text-sm text-muted-foreground">
           <p>
-            All information is encrypted and securely stored. We comply with all
-            applicable privacy regulations.
+            All information is encrypted and securely stored. We comply with all applicable
+            privacy regulations.
           </p>
         </div>
       </div>

@@ -12,7 +12,7 @@ interface ReportSummaryProps {
 
 const ReportSummary = ({ summaryStats }: ReportSummaryProps) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4">
       <Card className="bg-white/5 border-white/20 p-4">
         <div className="flex items-center gap-3">
           <Building2 className="h-8 w-8 text-electric-blue" />
@@ -27,7 +27,7 @@ const ReportSummary = ({ summaryStats }: ReportSummaryProps) => {
         <div className="flex items-center gap-3">
           <DollarSign className="h-8 w-8 text-success-green" />
           <div>
-            <p className="text-2xl font-bold text-white">$151K</p>
+            <p className="text-2xl font-bold text-white">{summaryStats.totalValue}</p>
             <p className="text-blue-soft text-sm">Total Value</p>
           </div>
         </div>

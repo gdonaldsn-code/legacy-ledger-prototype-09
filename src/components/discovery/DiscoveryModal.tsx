@@ -36,7 +36,7 @@ const DiscoveryModal = ({ isOpen, onClose }: DiscoveryModalProps) => {
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
-      <div className="bg-gradient-to-br from-dark-primary to-dark-secondary rounded-2xl border border-white/20 w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
+      <div className="bg-gradient-to-br from-navy-deep to-navy-medium rounded-2xl border border-white/20 w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/20">
           <div className="flex items-center gap-3">

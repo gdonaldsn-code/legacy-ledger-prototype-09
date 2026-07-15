@@ -12,15 +12,15 @@ const PricingSection = () => {
       gradient: "from-electric-blue to-cyber-teal",
       icon: Brain,
       features: [
-        "AI-powered account discovery across 11,000+ institutions",
-        "Comprehensive digital asset mapping & valuation",
-        "Real-time fraud detection & security alerts",
+        "Automated account discovery across financial institutions",
+        "Digital asset mapping & estimated valuation",
+        "Alerts for suspicious or at-risk account activity",
         "Professional estate summary with legal guidance",
         "Step-by-step closure instructions & documentation",
-        "24/7 priority support with estate specialists"
+        "Priority support with estate specialists"
       ],
-      cta: "Request AI Report",
-      highlight: "99.3% accuracy"
+      cta: "Request Discovery Report",
+      highlight: "Automated search"
     },
     {
       name: "Concierge Execution",
@@ -51,11 +51,11 @@ const PricingSection = () => {
       gradient: "from-cyber-teal to-success-green",
       icon: Shield,
       features: [
-        "Blockchain-secured digital vault with biometric access",
-        "AI-powered financial footprint monitoring",
-        "Smart executor network with automated verification",
-        "Legal document vault with version control",
-        "Automated trigger protocols with 99.9% uptime",
+        "Encrypted digital vault with secure access",
+        "Ongoing financial account monitoring",
+        "Executor access with identity verification",
+        "Legal document vault with version history",
+        "Automated release protocols when the time comes",
         "Estate planning consultation included"
       ],
       cta: "Start Protection",
@@ -76,11 +76,11 @@ const PricingSection = () => {
         <div className="text-center mb-12 md:mb-16 lg:mb-20 animate-slide-up">
           <div className="inline-flex items-center gap-3 bg-gradient-to-r from-electric-blue to-cyber-teal bg-clip-text text-transparent font-bold text-sm tracking-wider uppercase mb-6">
             <Sparkles className="h-4 w-4 text-electric-blue" />
-            Intelligent Pricing
+            Simple Pricing
           </div>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-white mb-4 md:mb-6 font-black">Choose Your AI-Powered Solution</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-white mb-4 md:mb-6 font-black">Choose the Right Plan for Your Family</h2>
           <p className="text-lg md:text-xl text-blue-soft max-w-4xl mx-auto leading-relaxed">
-            Revolutionary estate technology with transparent pricing designed for every family's unique needs.
+            Transparent pricing designed for every family's needs.
           </p>
         </div>
 
@@ -170,8 +170,8 @@ const PricingSection = () => {
               {[
                 { icon: Shield, label: "30-day money-back guarantee" },
                 { icon: Zap, label: "No hidden fees or charges" },
-                { icon: Brain, label: "AI-powered accuracy guarantee" },
-                { icon: Star, label: "Estate attorney validated" }
+                { icon: Brain, label: "Automated & continuously improving" },
+                { icon: Star, label: "Built around estate-planning best practices" }
               ].map((item, index) => (
                 <div key={index} className="flex flex-col items-center gap-3 group">
                   <item.icon className="h-6 w-6 text-electric-blue group-hover:scale-110 transition-transform" />

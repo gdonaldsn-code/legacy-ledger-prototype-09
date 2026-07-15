@@ -27,8 +27,8 @@ const HowItWorksSection = () => {
     {
       icon: Brain,
       title: "Comprehensive Digital Asset Search",
-      description: "Sophisticated search technology scans 11,000+ financial institutions and 30,000+ medical institutions using specialized identification processes.",
-      highlight: "99.3% accuracy"
+      description: "We search financial institutions and public unclaimed-property databases to build a picture of what accounts and assets exist.",
+      highlight: "Automated search"
     },
     {
       icon: Sparkles,

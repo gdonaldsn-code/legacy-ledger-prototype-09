@@ -1,73 +1,26 @@
-# Welcome to your Lovable project
+# Legacy Ledger (prototype)
 
-## Project info
+Helping families discover and manage the financial accounts of loved ones after
+they've passed — find unclaimed assets and close accounts with dignity.
 
-**URL**: https://lovable.dev/projects/d0687fd2-2010-44ea-8c90-7dba52175e43
+## Stack
 
-## How can I edit this code?
+- Vite + React 18 + TypeScript
+- shadcn-ui (Radix primitives) + Tailwind CSS
+- React Router, TanStack Query, React Hook Form + Zod
 
-There are several ways of editing your application.
+This is currently a frontend-only prototype — no backend/database is wired up yet.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/d0687fd2-2010-44ea-8c90-7dba52175e43) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Getting started
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Other scripts: `npm run build`, `npm run lint`, `npm run preview`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Working with Claude Code
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/d0687fd2-2010-44ea-8c90-7dba52175e43) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+See `CLAUDE.md` in the repo root — it documents the folder structure, conventions,
+and commands Claude Code should use when working in this codebase.

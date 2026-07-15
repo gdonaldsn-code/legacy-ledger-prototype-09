@@ -1,62 +1,20 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Mail, MapPin, BookUser, Building2, Scale, Landmark, HeartPulse, ShieldCheck, Users } from "lucide-react";
+import { Phone, Mail, MapPin, BookUser, Building2, Scale, Landmark, HeartPulse, ShieldCheck, Users, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import type { Database } from "@/integrations/supabase/types";
 
-interface Contact {
-  id: string;
-  name: string;
-  role: string;
-  category: "legal" | "financial" | "insurance" | "medical" | "personal";
-  firm?: string;
-  phone: string;
-  email: string;
-  address?: string;
-  notes?: string;
-  icon: typeof Scale;
-}
+type Contact = Database["public"]["Tables"]["contacts"]["Row"];
 
-const contacts: Contact[] = [
-  {
-    id: "1", name: "Margaret Chen, CPA", role: "Certified Public Accountant", category: "financial",
-    firm: "Chen & Associates Tax Advisory", phone: "(555) 234-5678", email: "m.chen@chenassociates.com",
-    address: "450 Financial Plaza, Suite 300, New York, NY 10005",
-    notes: "Handles annual tax filings and quarterly estimates. Next appointment: April 15.",
-    icon: Building2
-  },
-  {
-    id: "2", name: "Robert A. Whitfield, Esq.", role: "Estate Planning Attorney", category: "legal",
-    firm: "Whitfield & Grant LLP", phone: "(555) 876-5432", email: "rwhitfield@whitfieldgrant.com",
-    address: "200 Legal Center Dr, Suite 1200, New York, NY 10006",
-    notes: "Last will update: March 2025. Trust review scheduled for Q3.",
-    icon: Scale
-  },
-  {
-    id: "3", name: "David Kim", role: "Financial Advisor (CFP®)", category: "financial",
-    firm: "Vanguard Wealth Management", phone: "(555) 345-6789", email: "david.kim@vanguardwm.com",
-    address: "800 Investment Blvd, Suite 500, New York, NY 10007",
-    notes: "Quarterly portfolio review. Manages retirement and brokerage accounts.",
-    icon: Landmark
-  },
-  {
-    id: "4", name: "Sarah Mitchell", role: "Insurance Agent", category: "insurance",
-    firm: "Northwestern Mutual", phone: "(555) 456-7890", email: "s.mitchell@northwesternmutual.com",
-    notes: "Handles life insurance, umbrella policy. Annual review in September.",
-    icon: ShieldCheck
-  },
-  {
-    id: "5", name: "Dr. James Patterson", role: "Primary Care Physician", category: "medical",
-    firm: "NYC Medical Group", phone: "(555) 567-8901", email: "jpatterson@nycmedgroup.com",
-    address: "125 Health Ave, New York, NY 10010",
-    notes: "Annual physical due in June. Has complete medical history on file.",
-    icon: HeartPulse
-  },
-  {
-    id: "6", name: "Linda Vasquez", role: "Power of Attorney / Executor", category: "personal",
-    phone: "(555) 678-9012", email: "linda.vasquez@email.com",
-    notes: "Designated POA and estate executor. Emergency contact.",
-    icon: Users
-  }
-];
+const categoryIcon: Record<Contact["category"], typeof Scale> = {
+  legal: Scale,
+  financial: Building2,
+  insurance: ShieldCheck,
+  medical: HeartPulse,
+  personal: Users,
+};
 
 const getCategoryColor = (category: Contact["category"]) => {
   switch (category) {
@@ -79,6 +37,43 @@ const getCategoryLabel = (category: Contact["category"]) => {
 };
 
 export default function RolodexTab() {
+  const { user } = useAuth();
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+
+    supabase
+      .from("contacts")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true })
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          console.error("Failed to load contacts", error);
+        }
+        setContacts(data ?? []);
+        setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  const categoryCount = new Set(contacts.map((c) => c.category)).size;
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -99,7 +94,7 @@ export default function RolodexTab() {
               <div className="p-3 rounded-full bg-accent/20"><Scale className="h-6 w-6 text-accent-foreground" /></div>
               <div>
                 <p className="text-sm text-muted-foreground">Categories</p>
-                <p className="text-2xl font-bold text-foreground">5 types</p>
+                <p className="text-2xl font-bold text-foreground">{categoryCount} types</p>
               </div>
             </div>
           </CardContent>
@@ -119,50 +114,63 @@ export default function RolodexTab() {
 
       <div className="space-y-4">
         <h2 className="text-lg font-semibold text-foreground">Important Contacts</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {contacts.map((contact) => {
-            const IconComponent = contact.icon;
-            return (
-              <Card key={contact.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-muted"><IconComponent className="h-5 w-5 text-foreground" /></div>
-                      <div>
-                        <CardTitle className="text-base">{contact.name}</CardTitle>
-                        <p className="text-sm text-muted-foreground">{contact.role}</p>
+        {contacts.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center text-muted-foreground">
+              <BookUser className="h-10 w-10 mx-auto mb-3 opacity-50" />
+              No contacts yet.
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {contacts.map((contact) => {
+              const IconComponent = categoryIcon[contact.category];
+              return (
+                <Card key={contact.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-muted"><IconComponent className="h-5 w-5 text-foreground" /></div>
+                        <div>
+                          <CardTitle className="text-base">{contact.name}</CardTitle>
+                          <p className="text-sm text-muted-foreground">{contact.role}</p>
+                        </div>
                       </div>
+                      <Badge className={getCategoryColor(contact.category)} variant="outline">{getCategoryLabel(contact.category)}</Badge>
                     </div>
-                    <Badge className={getCategoryColor(contact.category)} variant="outline">{getCategoryLabel(contact.category)}</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {contact.firm && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Building2 className="h-4 w-4 flex-shrink-0" />{contact.firm}
-                    </div>
-                  )}
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Phone className="h-4 w-4 flex-shrink-0" />
-                    <a href={`tel:${contact.phone}`} className="hover:text-primary transition-colors">{contact.phone}</a>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Mail className="h-4 w-4 flex-shrink-0" />
-                    <a href={`mailto:${contact.email}`} className="hover:text-primary transition-colors truncate">{contact.email}</a>
-                  </div>
-                  {contact.address && (
-                    <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />{contact.address}
-                    </div>
-                  )}
-                  {contact.notes && (
-                    <div className="p-3 rounded-lg bg-muted/50 text-sm text-muted-foreground mt-2">{contact.notes}</div>
-                  )}
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {contact.firm && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Building2 className="h-4 w-4 flex-shrink-0" />{contact.firm}
+                      </div>
+                    )}
+                    {contact.phone && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Phone className="h-4 w-4 flex-shrink-0" />
+                        <a href={`tel:${contact.phone}`} className="hover:text-primary transition-colors">{contact.phone}</a>
+                      </div>
+                    )}
+                    {contact.email && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Mail className="h-4 w-4 flex-shrink-0" />
+                        <a href={`mailto:${contact.email}`} className="hover:text-primary transition-colors truncate">{contact.email}</a>
+                      </div>
+                    )}
+                    {contact.address && (
+                      <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />{contact.address}
+                      </div>
+                    )}
+                    {contact.notes && (
+                      <div className="p-3 rounded-lg bg-muted/50 text-sm text-muted-foreground mt-2">{contact.notes}</div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

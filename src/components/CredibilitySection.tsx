@@ -7,34 +7,34 @@ const CredibilitySection = () => {
     {
       icon: Shield,
       title: "Bank-Level Security",
-      description: "Military-grade 256-bit encryption with biometric authentication",
-      highlight: "99.99% uptime"
+      description: "256-bit encryption on every account and document you store with us",
+      highlight: "Encrypted & secure"
     },
     {
       icon: Brain,
-      title: "AI-Powered Discovery",
-      description: "Machine learning algorithms with 99.3% accuracy across 11,000+ institutions",
+      title: "Automated Discovery",
+      description: "Automated search across financial institutions and public unclaimed-property records",
       highlight: "Real-time analysis"
     },
     {
       icon: Award,
-      title: "Legal Partnership",
-      description: "Developed with top estate attorneys and validated by legal experts",
-      highlight: "Attorney backed"
+      title: "Built for Estate Planning",
+      description: "Designed around standard estate-planning and probate processes",
+      highlight: "Process-driven"
     },
     {
       icon: Globe,
-      title: "Global Infrastructure",
-      description: "Multi-region deployment with blockchain-secured data integrity",
+      title: "Secure Cloud Storage",
+      description: "Your documents and data are encrypted at rest and in transit",
       highlight: "Enterprise grade"
     }
   ];
 
   const impactStats = [
-    { value: "3.4M", label: "Annual deaths in the US requiring estate management", trend: "+2.3%" },
-    { value: "87%", label: "Have complex digital financial footprints", trend: "+15%" },
-    { value: "6+ months", label: "Average family discovery timeline", trend: "Decreasing" },
-    { value: "45%", label: "Miss critical accounts without professional help", trend: "Alarming" }
+    { value: "3.4M", label: "Annual deaths in the US requiring estate management" },
+    { value: "87%", label: "Estimated to have complex digital financial footprints" },
+    { value: "6+ months", label: "Typical family discovery timeline without help" },
+    { value: "45%", label: "Estimated to miss accounts without professional help" }
   ];
 
   return (
@@ -51,12 +51,12 @@ const CredibilitySection = () => {
         <div className="text-center mb-12 md:mb-16 lg:mb-20 animate-slide-up">
           <div className="inline-flex items-center gap-3 bg-gradient-to-r from-electric-blue to-cyber-teal bg-clip-text text-transparent font-bold text-sm tracking-wider uppercase mb-6">
             <TrendingUp className="h-4 w-4 text-electric-blue" />
-            Market Intelligence
+            The Landscape
           </div>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-navy-deep mb-4 md:mb-6 font-black">The Estate Crisis & Our Solution</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-navy-deep mb-4 md:mb-6 font-black">Digital Assets Are Easy to Lose Track Of</h2>
           <p className="text-lg md:text-xl text-navy-light max-w-4xl mx-auto leading-relaxed">
-            Exponential growth in digital assets creates unprecedented challenges. 
-            Legacy Ledger provides AI-powered solutions for the modern estate landscape.
+            As more of our financial lives move online, it's gotten harder for families to know what
+            accounts and assets a loved one had. Legacy Ledger helps close that gap.
           </p>
         </div>
 
@@ -121,23 +121,17 @@ const CredibilitySection = () => {
         {/* Market impact statistics */}
         <div className="animate-slide-up" style={{ animationDelay: '0.8s' }}>
           <div className="text-center mb-8 md:mb-12">
-            <h3 className="text-2xl md:text-3xl font-bold text-navy-deep mb-3 md:mb-4">Market Impact Analysis</h3>
+            <h3 className="text-2xl md:text-3xl font-bold text-navy-deep mb-3 md:mb-4">Why This Matters</h3>
             <p className="text-navy-light text-base md:text-lg max-w-3xl mx-auto">
-              Real-time data showing the growing complexity of digital estate management in America.
+              Estimates that illustrate the growing complexity of digital estate management in America.
             </p>
           </div>
-          
+
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-6xl mx-auto">
             {impactStats.map((stat, index) => (
               <div key={index} className="group">
-                <div className="glass-morphism p-6 md:p-8 rounded-3xl border border-white/30 backdrop-blur-xl text-center space-y-3 md:space-y-4 interactive-card">
-                  <div className="space-y-2">
-                    <div className="text-3xl md:text-4xl font-black text-navy-deep">{stat.value}</div>
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-2 h-2 bg-gradient-to-r from-electric-blue to-cyber-teal rounded-full" />
-                      <span className="text-xs font-semibold text-electric-blue">{stat.trend}</span>
-                    </div>
-                  </div>
+                <div className="glass-morphism p-6 md:p-8 rounded-3xl border border-white/30 text-center space-y-3 md:space-y-4 interactive-card">
+                  <div className="text-3xl md:text-4xl font-black text-navy-deep">{stat.value}</div>
                   <p className="text-navy-light text-sm leading-relaxed">{stat.label}</p>
                 </div>
               </div>
@@ -151,14 +145,14 @@ const CredibilitySection = () => {
             <div className="space-y-6">
               <div className="flex items-center justify-center gap-3">
                 <Target className="h-8 w-8 text-electric-blue" />
-                <h3 className="text-2xl font-bold text-navy-deep">Ready to Transform Estate Management?</h3>
+                <h3 className="text-2xl font-bold text-navy-deep">Ready to Get Started?</h3>
               </div>
               <p className="text-navy-light text-lg leading-relaxed">
-                Join the AI revolution in estate planning. Protect your family's digital legacy with cutting-edge technology.
+                Protect your family's digital legacy, or find out what a loved one left behind.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button variant="hero" size="xl" className="group">
-                  Start AI Discovery
+                  Start Discovery
                   <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button variant="glass" size="xl">

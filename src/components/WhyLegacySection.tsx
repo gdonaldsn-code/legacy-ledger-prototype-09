@@ -6,23 +6,23 @@ const WhyLegacySection = () => {
     {
       icon: DollarSign,
       title: "Prevent Asset Loss",
-      description: "AI-powered discovery prevents your family's digital wealth from disappearing into unclaimed property databases.",
+      description: "Automated discovery helps prevent your family's assets from disappearing into unclaimed property databases.",
       gradient: "from-electric-blue to-cyber-teal",
-      highlight: "$45K avg. recovery"
+      highlight: "Fewer lost accounts"
     },
     {
       icon: Heart,
       title: "Reduce Emotional Burden",
-      description: "Advanced automation handles complex estate processes, allowing families to focus on healing and remembrance.",
+      description: "We handle the paperwork and phone calls so families can focus on healing and remembrance.",
       gradient: "from-cyber-teal to-neon-purple",
-      highlight: "90% stress reduction"
+      highlight: "Less on your plate"
     },
     {
       icon: Zap,
       title: "Accelerate Resolution",
-      description: "What traditionally takes 6+ months, our AI platform completes in days with professional expertise.",
+      description: "Estate discovery that traditionally takes months can move much faster with dedicated support.",
       gradient: "from-neon-purple to-success-green",
-      highlight: "10x faster"
+      highlight: "Faster resolution"
     }
   ];
 
@@ -39,11 +39,11 @@ const WhyLegacySection = () => {
         <div className="text-center mb-12 md:mb-16 lg:mb-20 animate-slide-up">
           <div className="inline-flex items-center gap-3 bg-gradient-to-r from-electric-blue to-cyber-teal bg-clip-text text-transparent font-bold text-sm tracking-wider uppercase mb-6">
             <Target className="h-4 w-4 text-electric-blue" />
-            Revolutionary Impact
+            Why It Matters
           </div>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-white mb-4 md:mb-6 font-black">Why Legacy Ledger Leads the Future</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-white mb-4 md:mb-6 font-black">Why Families Choose Legacy Ledger</h2>
           <p className="text-lg md:text-xl text-blue-soft max-w-4xl mx-auto leading-relaxed">
-            Advanced AI technology meets compassionate estate management to create unprecedented value for grieving families.
+            Technology paired with compassionate support, so families get real help during a hard time.
           </p>
         </div>
 
@@ -78,32 +78,22 @@ const WhyLegacySection = () => {
           ))}
         </div>
 
-        {/* Testimonial */}
+        {/* Our commitment */}
         <div className="max-w-5xl mx-auto animate-slide-up" style={{ animationDelay: '0.6s' }}>
-          <div className="glass-morphism rounded-3xl p-6 md:p-12 border border-white/20 backdrop-blur-xl text-center">
+          <div className="glass-morphism rounded-3xl p-6 md:p-12 border border-white/20 text-center">
             <div className="space-y-6 md:space-y-8">
               <div className="flex items-center justify-center gap-3 md:gap-4">
-                <Brain className="h-8 w-8 md:h-12 md:w-12 text-electric-blue" />
+                <Heart className="h-8 w-8 md:h-12 md:w-12 text-electric-blue" />
                 <div className="h-1 bg-gradient-to-r from-electric-blue to-cyber-teal rounded-full w-16 md:w-24" />
-                <Sparkles className="h-8 w-8 md:h-12 md:w-12 text-cyber-teal" />
               </div>
-              
-              <blockquote className="text-lg md:text-xl lg:text-2xl text-blue-soft italic leading-relaxed">
-                "Legacy Ledger's AI discovered three hidden accounts worth $45,000 that we never knew existed. 
-                The peace of mind knowing our loved one's digital legacy was completely protected was invaluable."
+
+              <blockquote className="text-lg md:text-xl lg:text-2xl text-blue-soft leading-relaxed">
+                Our goal is simple: make sure no family loses track of what a loved one left behind,
+                and handle the process with the same care we'd want for our own family.
               </blockquote>
-              
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
-                <div className="text-white font-semibold text-sm md:text-base">Sarah M., Estate Beneficiary</div>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="w-1 h-1 bg-electric-blue rounded-full" />
-                  ))}
-                </div>
-              </div>
-              
+
               <Button variant="hero" size="lg" className="group text-sm md:text-base px-6 md:px-8 py-3 md:py-4">
-                Experience the Future of Estate Management
+                Get Started
                 <ArrowRight className="ml-2 h-5 w-5 md:h-6 md:w-6 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>

@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, Calendar, ArrowLeft, TrendingUp, Shield, Zap } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useDiscoveryData } from "@/components/discovery/hooks/useDiscoveryData";
+import { Download, Calendar, TrendingUp, Shield, Zap } from "lucide-react";
+import { useUserDiscoveredAccounts } from "@/components/discovery/hooks/useUserDiscoveredAccounts";
 import { useReportDownload } from "@/components/discovery/hooks/useReportDownload";
 import ScanningProgress from "@/components/discovery/ScanningProgress";
 import AccountsList from "@/components/discovery/AccountsList";
 import ReportSummary from "@/components/discovery/ReportSummary";
+import SiteHeader from "@/components/SiteHeader";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const [scanStarted, setScanStarted] = useState(false);
-  const { currentStep, discoveredAccounts, scanningSteps, summaryStats, isComplete } = useDiscoveryData(scanStarted);
+  const { currentStep, discoveredAccounts, scanningSteps, summaryStats, isComplete } = useUserDiscoveredAccounts(scanStarted);
   const { downloadReport } = useReportDownload();
 
   const handleDownloadReport = () => {
@@ -33,37 +32,19 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen comfort-gradient">
-      {/* Header */}
-      <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate("/")}
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Home
-              </Button>
-              <div className="h-6 w-px bg-border" />
-              <h1 className="text-xl font-semibold">Discovery Dashboard</h1>
-            </div>
-            {isComplete && (
-              <Button
-                onClick={handleDownloadReport}
-                variant="default"
-                size="sm"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Download Report
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
+      <SiteHeader
+        actions={
+          isComplete && (
+            <Button onClick={handleDownloadReport} variant="default" size="sm">
+              <Download className="h-4 w-4 mr-2" />
+              Download Report
+            </Button>
+          )
+        }
+      />
 
       <div className="container mx-auto px-4 py-8">
+        <h1 className="text-xl font-semibold mb-6">Discovery Dashboard</h1>
         {/* Welcome Section */}
         <div className="mb-8">
           <Card className="card-gradient border-border/50 backdrop-blur-sm">
@@ -119,9 +100,9 @@ const Dashboard = () => {
                     AI is analyzing your financial network
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <ScanningProgress 
-                    currentStep={currentStep} 
+                <CardContent className="bg-gradient-to-br from-navy-deep to-navy-medium rounded-xl p-4 -mt-2">
+                  <ScanningProgress
+                    currentStep={currentStep}
                     scanningSteps={scanningSteps}
                     onSkipToResults={() => setScanStarted(false)}
                   />
@@ -135,7 +116,7 @@ const Dashboard = () => {
                     Your complete discovery report
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="bg-gradient-to-br from-navy-deep to-navy-medium rounded-xl p-4 -mt-2">
                   <ReportSummary summaryStats={summaryStats} />
                 </CardContent>
               </Card>
@@ -182,7 +163,9 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 {discoveredAccounts.length > 0 ? (
-                  <AccountsList discoveredAccounts={discoveredAccounts} />
+                  <div className="bg-gradient-to-br from-navy-deep to-navy-medium rounded-xl p-4">
+                    <AccountsList discoveredAccounts={discoveredAccounts} />
+                  </div>
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
                     <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />

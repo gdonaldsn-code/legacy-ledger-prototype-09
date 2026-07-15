@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Zap, Shield } from "lucide-react";
+import { ArrowRight, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import InteractiveBackground from "./InteractiveBackground";
 import DataVisualization from "./DataVisualization";
 import DiscoveryModal from "./discovery/DiscoveryModal";
 import LiveDemo from "./LiveDemo";
@@ -25,17 +24,9 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Interactive animated background */}
+      {/* Background */}
       <div className="absolute inset-0 hero-gradient" />
-      <InteractiveBackground />
-      
-      {/* Floating geometric elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 left-4 md:top-20 md:left-20 w-16 h-16 md:w-32 md:h-32 mesh-gradient rounded-full opacity-20 animate-float" />
-        <div className="absolute top-20 right-8 md:top-40 md:right-32 w-12 h-12 md:w-24 md:h-24 neural-gradient rounded-lg rotate-45 opacity-30 animate-pulse" />
-        <div className="absolute bottom-20 left-1/4 w-20 h-20 md:w-40 md:h-40 bg-gradient-to-br from-cyber-teal to-neon-purple rounded-full opacity-15 animate-float" style={{ animationDelay: '2s' }} />
-      </div>
-      
+
       {/* Main content */}
       <div className="relative z-10 container mx-auto px-4 md:px-6">
         <div className="max-w-7xl mx-auto">
@@ -43,10 +34,9 @@ const HeroSection = () => {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div className="space-y-6 md:space-y-8 animate-slide-up text-center lg:text-left">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 md:gap-3 glass-morphism px-4 md:px-6 py-2 md:py-3 rounded-full border border-white/30 backdrop-blur-xl text-sm md:text-base">
-                <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-electric-blue" />
-                <span className="text-white font-medium">Revolutionary Estate Technology</span>
-                <Zap className="h-4 w-4 md:h-5 md:w-5 text-cyber-teal" />
+              <div className="inline-flex items-center gap-2 md:gap-3 glass-morphism px-4 md:px-6 py-2 md:py-3 rounded-full border border-white/30 text-sm md:text-base">
+                <Shield className="h-4 w-4 md:h-5 md:w-5 text-electric-blue" />
+                <span className="text-white font-medium">Estate & Legacy Support</span>
               </div>
 
               {/* Main headline */}
@@ -82,8 +72,8 @@ const HeroSection = () => {
               <div className="flex flex-wrap justify-center lg:justify-start gap-4 md:gap-6 pt-6 md:pt-8">
                 {[
                   "Bank-Level Security",
-                  "AI-Powered Discovery", 
-                  "Estate Attorney Validated"
+                  "Automated Discovery",
+                  "Built for Estate Planning"
                 ].map((item, index) => (
                   <div key={index} className="flex items-center gap-2 md:gap-3 group">
                     <div className="w-2 h-2 bg-gradient-to-r from-electric-blue to-cyber-teal rounded-full group-hover:scale-150 transition-transform" />
@@ -109,7 +99,7 @@ const HeroSection = () => {
                     {[
                       { label: "Financial Institutions", progress: 95, color: "from-electric-blue to-cyber-teal" },
                       { label: "Digital Assets Found", progress: 87, color: "from-cyber-teal to-neon-purple" },
-                      { label: "Recovery Success Rate", progress: 92, color: "from-neon-purple to-success-green" }
+                      { label: "Report Readiness", progress: 92, color: "from-neon-purple to-success-green" }
                     ].map((item, index) => (
                       <div key={index} className="space-y-2">
                         <div className="flex justify-between text-sm">

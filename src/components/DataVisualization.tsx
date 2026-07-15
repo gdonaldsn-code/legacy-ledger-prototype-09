@@ -16,11 +16,11 @@ const DataVisualization = () => {
           key={index}
           className="group relative"
         >
-          {/* Animated background */}
-          <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-20 rounded-2xl blur-xl group-hover:opacity-40 transition-all duration-500`} />
-          
-          {/* Card content */}
-          <div className="relative glass-morphism p-4 md:p-6 rounded-2xl border border-white/20 backdrop-blur-xl">
+          {/* Card content — deliberately a solid light card (not the translucent
+              glass-morphism token) since this component always needs to read
+              as a light card with dark text, including when placed directly
+              on the dark hero background. */}
+          <div className="relative bg-white/95 p-4 md:p-6 rounded-2xl border border-border shadow-soft">
             <div className="flex items-center justify-between mb-3 md:mb-4">
               <stat.icon className="h-6 w-6 md:h-8 md:w-8 text-electric-blue" />
               <div className="w-8 md:w-12 h-1 bg-gradient-to-r from-electric-blue to-cyber-teal rounded-full" />
