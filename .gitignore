@@ -25,3 +25,6 @@ supabase/.temp
 *.sln
 *.sw?
 .vercel
+
+# Vite temp config files generated during dev server startup
+vite.config.ts.timestamp-*.mjs
