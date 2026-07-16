@@ -22,15 +22,16 @@ export const callAiAssistant = async <T = unknown>(
     // actual JSON body (our { error: "..." } payload) on error.context —
     // read that so failures are actually debuggable instead of opaque.
     const context = (error as { context?: Response }).context;
+    let detail: string | undefined;
     if (context) {
       try {
         const body = await context.clone().json();
-        throw new Error(body?.error ?? error.message ?? "AI request failed");
+        detail = body?.error;
       } catch {
-        // Body wasn't JSON — fall through to the generic message below.
+        // Body wasn't JSON — fall back to the generic message below.
       }
     }
-    throw new Error(error.message ?? "AI request failed");
+    throw new Error(detail ?? error.message ?? "AI request failed");
   }
 
   if (data?.error) {
