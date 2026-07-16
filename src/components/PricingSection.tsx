@@ -27,6 +27,26 @@ const PricingSection = () => {
     highlight: string;
   }> = [
     {
+      id: "legacy-protection",
+      name: "Legacy Protection",
+      description: "Proactive digital estate planning platform",
+      price: "$5-10",
+      period: "/month",
+      popular: false,
+      gradient: "from-cyber-teal to-success-green",
+      icon: Shield,
+      features: [
+        "Encrypted digital vault with secure access",
+        "Ongoing financial account monitoring",
+        "Executor access with identity verification",
+        "Legal document vault with version history",
+        "Automated release protocols when the time comes",
+        "Estate planning consultation included"
+      ],
+      cta: "Start Protection",
+      highlight: "Free 30-day trial"
+    },
+    {
       id: "discovery-report",
       name: "AI Discovery Report",
       description: "Perfect for immediate estate scanning needs",
@@ -66,26 +86,6 @@ const PricingSection = () => {
       ],
       cta: "Get Full Service",
       highlight: "100% managed"
-    },
-    {
-      id: "legacy-protection",
-      name: "Legacy Protection",
-      description: "Proactive digital estate planning platform",
-      price: "$5-10",
-      period: "/month",
-      popular: false,
-      gradient: "from-cyber-teal to-success-green",
-      icon: Shield,
-      features: [
-        "Encrypted digital vault with secure access",
-        "Ongoing financial account monitoring",
-        "Executor access with identity verification",
-        "Legal document vault with version history",
-        "Automated release protocols when the time comes",
-        "Estate planning consultation included"
-      ],
-      cta: "Start Protection",
-      highlight: "Free 30-day trial"
     }
   ];
 
