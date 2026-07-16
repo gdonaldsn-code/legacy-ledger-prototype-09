@@ -1,8 +1,11 @@
 import { TrendingUp, Users, Shield, Award, Brain, Zap, Target, Globe, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import DataVisualization from "./DataVisualization";
 
 const CredibilitySection = () => {
+  const navigate = useNavigate();
+
   const trustMetrics = [
     {
       icon: Shield,
@@ -151,13 +154,9 @@ const CredibilitySection = () => {
                 Protect your family's digital legacy, or find out what a loved one left behind.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button variant="hero" size="xl" className="group">
+                <Button onClick={() => navigate("/register")} variant="hero" size="xl" className="group">
                   Start Discovery
                   <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                </Button>
-                <Button variant="glass" size="xl">
-                  <Brain className="mr-2 h-6 w-6" />
-                  View Live Demo
                 </Button>
               </div>
             </div>
