@@ -1,12 +1,33 @@
-import { Check, Star, Shield, Zap, Brain, Rocket, ArrowRight, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { Check, Star, Shield, Zap, Brain, Rocket, ArrowRight, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import type { PricingPlanId } from "@/integrations/stripe/client";
 
 const PricingSection = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [checkingOutPlan, setCheckingOutPlan] = useState<PricingPlanId | null>(null);
 
-  const plans = [
+  const plans: Array<{
+    id: PricingPlanId;
+    name: string;
+    description: string;
+    price: string;
+    period: string;
+    popular: boolean;
+    gradient: string;
+    icon: typeof Brain;
+    features: string[];
+    cta: string;
+    highlight: string;
+  }> = [
     {
+      id: "discovery-report",
       name: "AI Discovery Report",
       description: "Perfect for immediate estate scanning needs",
       price: "$299",
@@ -26,6 +47,7 @@ const PricingSection = () => {
       highlight: "Automated search"
     },
     {
+      id: "concierge-execution",
       name: "Concierge Execution",
       description: "Complete white-glove estate management",
       price: "$699",
@@ -46,6 +68,7 @@ const PricingSection = () => {
       highlight: "100% managed"
     },
     {
+      id: "legacy-protection",
       name: "Legacy Protection",
       description: "Proactive digital estate planning platform",
       price: "$5-10",
@@ -65,6 +88,37 @@ const PricingSection = () => {
       highlight: "Free 30-day trial"
     }
   ];
+
+  const handleCtaClick = async (planId: PricingPlanId) => {
+    if (!user) {
+      navigate("/register");
+      return;
+    }
+
+    setCheckingOutPlan(planId);
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const { data, error } = await supabase.functions.invoke("create-checkout-session", {
+      body: { planId, origin: window.location.origin },
+      headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
+    });
+
+    setCheckingOutPlan(null);
+
+    if (error || !data?.url) {
+      toast({
+        title: "Couldn't start checkout",
+        description: error?.message ?? "Please try again in a moment.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    window.location.href = data.url;
+  };
 
   return (
     <section className="py-16 md:py-24 lg:py-32 relative overflow-hidden">
@@ -153,11 +207,15 @@ const PricingSection = () => {
                 {/* CTA Button */}
                 <div className="mt-auto">
                   <Button
-                    onClick={() => navigate("/register")}
+                    onClick={() => handleCtaClick(plan.id)}
+                    disabled={checkingOutPlan === plan.id}
                     variant={plan.popular ? "quantum" : "hero"}
                     size="lg"
                     className="w-full group text-sm md:text-base py-3 md:py-4"
                   >
+                    {checkingOutPlan === plan.id ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : null}
                     {plan.cta}
                     <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
