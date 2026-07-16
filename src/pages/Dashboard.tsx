@@ -8,6 +8,7 @@ import ScanningProgress from "@/components/discovery/ScanningProgress";
 import AccountsList from "@/components/discovery/AccountsList";
 import ReportSummary from "@/components/discovery/ReportSummary";
 import SiteHeader from "@/components/SiteHeader";
+import ExecutorVerification from "@/components/ExecutorVerification";
 
 const Dashboard = () => {
   const [scanStarted, setScanStarted] = useState(false);
@@ -55,7 +56,7 @@ const Dashboard = () => {
             <CardHeader>
               <CardTitle className="text-2xl">Welcome to Your Dashboard</CardTitle>
               <CardDescription className="text-base">
-                Your AI-powered discovery scan is {isComplete ? 'complete' : 'in progress'}. Track your discovered accounts and assets below.
+                Your discovery scan is {isComplete ? 'complete' : 'in progress'}. Track your discovered accounts and assets below.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -92,6 +93,8 @@ const Dashboard = () => {
           </Card>
         </div>
 
+        <ExecutorVerification />
+
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Scanning Progress or Summary */}
@@ -101,7 +104,7 @@ const Dashboard = () => {
                 <CardHeader>
                   <CardTitle>Scan Progress</CardTitle>
                   <CardDescription>
-                    AI is analyzing your financial network
+                    Searching your financial network
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="bg-gradient-to-br from-navy-deep to-navy-medium rounded-xl p-4 -mt-2">

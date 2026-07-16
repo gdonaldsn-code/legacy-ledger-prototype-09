@@ -16,6 +16,11 @@ export interface Database {
           selfie_path: string | null;
           government_id_path: string | null;
           intent: 'planning' | 'discovery' | null;
+          verification_status: 'not_started' | 'pending_review' | 'verified' | 'rejected';
+          death_certificate_path: string | null;
+          letters_testamentary_path: string | null;
+          verification_notes: string | null;
+          verification_submitted_at: string | null;
           created_at: string;
           updated_at: string;
         };

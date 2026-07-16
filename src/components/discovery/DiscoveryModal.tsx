@@ -45,7 +45,7 @@ const DiscoveryModal = ({ isOpen, onClose }: DiscoveryModalProps) => {
             </div>
             <div>
               <h2 className="text-xl font-bold text-white">Discovery Report</h2>
-              <p className="text-blue-soft text-sm">Generated in 47 seconds</p>
+              <p className="text-blue-soft text-sm">Your discovery results</p>
             </div>
           </div>
           <Button 

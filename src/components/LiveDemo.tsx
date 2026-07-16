@@ -149,7 +149,7 @@ const LiveDemo = ({ isOpen, onClose }: LiveDemoProps) => {
             </div>
             <div>
               <h2 className="text-xl font-bold text-white">Live AI Discovery Demo</h2>
-              <p className="text-blue-soft text-sm">Watch our AI scan in real-time</p>
+              <p className="text-blue-soft text-sm">Watch a live discovery scan</p>
             </div>
           </div>
           <Button 

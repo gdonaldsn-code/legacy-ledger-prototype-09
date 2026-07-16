@@ -161,10 +161,10 @@ const HowItWorksSection = () => {
                 <h3 className="text-2xl font-bold text-navy-deep">Ready to Secure Your Legacy?</h3>
               </div>
               <p className="text-navy-light text-lg leading-relaxed">
-                Join thousands of families who have protected their digital wealth with our AI-powered platform.
+                Protect your family's digital wealth, or get help finding what a loved one left behind.
               </p>
               <Button variant="hero" size="xl" className="group">
-                Book Free AI Consultation
+                Book Free Consultation
                 <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>

@@ -78,8 +78,8 @@ const CredibilitySection = () => {
                     Lost in the Digital Estate Gap
                   </h3>
                   <p className="text-navy-light text-base md:text-lg leading-relaxed">
-                    Unclaimed digital assets across the United States continue to grow exponentially. 
-                    Our AI-powered discovery platform prevents your family's legacy from becoming another statistic.
+                    Unclaimed digital assets across the United States continue to grow.
+                    Our discovery platform helps keep your family's legacy from becoming another statistic.
                   </p>
                 </div>
               </div>
@@ -157,7 +157,7 @@ const CredibilitySection = () => {
                 </Button>
                 <Button variant="glass" size="xl">
                   <Brain className="mr-2 h-6 w-6" />
-                  View Technology Demo
+                  View Live Demo
                 </Button>
               </div>
             </div>

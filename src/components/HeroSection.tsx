@@ -51,8 +51,8 @@ const HeroSection = () => {
               </h1>
                 
                 <p className="text-lg md:text-xl lg:text-2xl text-blue-soft leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                  AI-powered discovery platform that finds hidden financial accounts and digital assets 
-                  <span className="text-cyber-teal font-semibold"> in minutes, not months</span>.
+                  A discovery platform that helps you find hidden financial accounts and digital assets
+                  <span className="text-cyber-teal font-semibold"> faster than doing it alone</span>.
                 </p>
               </div>
 
