@@ -9,6 +9,7 @@ import AccountsList from "@/components/discovery/AccountsList";
 import ReportSummary from "@/components/discovery/ReportSummary";
 import SiteHeader from "@/components/SiteHeader";
 import ExecutorVerification from "@/components/ExecutorVerification";
+import AIGuidanceChat from "@/components/AIGuidanceChat";
 
 const Dashboard = () => {
   const [scanStarted, setScanStarted] = useState(false);
@@ -220,6 +221,8 @@ const Dashboard = () => {
           </Card>
         </div>
       </div>
+
+      <AIGuidanceChat />
     </div>
   );
 };

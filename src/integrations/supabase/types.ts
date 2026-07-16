@@ -21,6 +21,7 @@ export interface Database {
           letters_testamentary_path: string | null;
           verification_notes: string | null;
           verification_submitted_at: string | null;
+          verification_ai_summary: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -41,6 +42,8 @@ export interface Database {
           beneficiary_status: 'confirmed' | 'needs_review' | 'missing' | 'unknown';
           beneficiary_names: string | null;
           beneficiary_last_reviewed: string | null;
+          closure_checklist: string[] | null;
+          closure_checklist_generated_at: string | null;
           created_at: string;
         };
         Insert: Partial<Database['public']['Tables']['discovered_accounts']['Row']> & {

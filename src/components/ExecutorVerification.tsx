@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Upload, Loader2, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { FileText, Upload, Loader2, CheckCircle2, Clock, XCircle, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useToast } from "@/hooks/use-toast";
+import { callAiAssistant } from "@/integrations/ai/client";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ACCEPTED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "application/pdf"];
@@ -89,6 +90,35 @@ const ExecutorVerification = () => {
       lettersPath = lettersUpload.data.path;
     }
 
+    // Best-effort AI read of what got uploaded. Purely advisory — it never
+    // touches verification_status, which stays a human review step.
+    let aiSummary: string | null = null;
+    try {
+      const analyses = await Promise.all([
+        callAiAssistant<{ summary: string }>("analyze-document", {
+          bucket: "executor-documents",
+          path: deathCertUpload.data.path,
+          documentContext: "death_certificate",
+        }),
+        lettersPath
+          ? callAiAssistant<{ summary: string }>("analyze-document", {
+              bucket: "executor-documents",
+              path: lettersPath,
+              documentContext: "letters_testamentary",
+            })
+          : Promise.resolve(null),
+      ]);
+      const [deathCertAnalysis, lettersAnalysis] = analyses;
+      aiSummary = [
+        `Death certificate: ${deathCertAnalysis.summary}`,
+        lettersAnalysis ? `Letters Testamentary: ${lettersAnalysis.summary}` : null,
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+    } catch (aiError) {
+      console.error("AI document analysis unavailable", aiError);
+    }
+
     const { error } = await supabase
       .from("profiles")
       .update({
@@ -96,6 +126,7 @@ const ExecutorVerification = () => {
         letters_testamentary_path: lettersPath,
         verification_status: "pending_review",
         verification_submitted_at: new Date().toISOString(),
+        verification_ai_summary: aiSummary,
       })
       .eq("id", user.id);
 
@@ -130,6 +161,19 @@ const ExecutorVerification = () => {
         {profile.verification_status === "rejected" && profile.verification_notes && (
           <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
             {profile.verification_notes}
+          </div>
+        )}
+
+        {profile.verification_ai_summary && (
+          <div className="p-3 rounded-lg bg-background/70 border border-border text-sm space-y-1">
+            <div className="flex items-center gap-2 font-medium text-foreground">
+              <Sparkles className="h-4 w-4 text-primary" />
+              AI read of your documents
+            </div>
+            <p className="text-muted-foreground whitespace-pre-line">{profile.verification_ai_summary}</p>
+            <p className="text-xs text-muted-foreground/70">
+              Automated and advisory only — a specialist still reviews before verifying.
+            </p>
           </div>
         )}
 

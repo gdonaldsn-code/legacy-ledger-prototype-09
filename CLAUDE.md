@@ -77,6 +77,38 @@ No webhook handler exists yet — nothing currently marks a `profiles` row as
 listening for `checkout.session.completed` if/when entitlements need to gate
 app features.
 
+## AI features (Claude API)
+
+`src/integrations/ai/client.ts` wraps calls to a single Supabase Edge Function,
+`supabase/functions/ai-assistant/index.ts`, which fronts three actions (routed
+by an `action` field in the request body) using one `ANTHROPIC_API_KEY`
+secret:
+
+- `analyze-document` — reads an uploaded executor document (death certificate
+  / Letters Testamentary) and returns a plain-language summary of what it
+  appears to be. Advisory only; never changes `verification_status`, which
+  stays a human review step. Wired into `ExecutorVerification.tsx`, result
+  cached in `profiles.verification_ai_summary`.
+- `closure-checklist` — generates a short account-closure checklist for one
+  `discovered_accounts` row, cached in `closure_checklist` /
+  `closure_checklist_generated_at`. Wired into `discovery/ClosureChecklist.tsx`.
+- `chat` — a guidance assistant grounded in the caller's own profile +
+  discovered accounts (fetched server-side via their auth token, never
+  trusted from the client). Session-only history, no persistence yet. Wired
+  into `AIGuidanceChat.tsx`, mounted on the Dashboard.
+
+Deploy/config (one-time, run by a human with dashboard access):
+```
+npx supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
+npx supabase functions deploy ai-assistant
+```
+
+The Legal Documents vault (`RewardsPerks` → Legal Docs tab) currently only
+shows seeded demo rows with no real file upload UI — that's a pre-existing
+gap, not something AI features were wired into yet. If a real upload flow
+gets built there, `analyze-document` already generalizes to that document
+type.
+
 ## Structure
 
 ```

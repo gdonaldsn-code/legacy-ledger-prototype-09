@@ -61,6 +61,7 @@ export const useUserDiscoveredAccounts = (scanStarted: boolean) => {
         beneficiaryStatus: row.beneficiary_status,
         beneficiaryNames: row.beneficiary_names,
         beneficiaryLastReviewed: row.beneficiary_last_reviewed,
+        closureChecklist: row.closure_checklist,
       }))
     );
   };

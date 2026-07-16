@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, CreditCard, Coins } from "lucide-react";
 import { DiscoveredAccount } from "./hooks/useDiscoveryData";
 import BeneficiaryBadge from "./BeneficiaryBadge";
+import ClosureChecklist from "./ClosureChecklist";
 
 interface AccountsListProps {
   discoveredAccounts: DiscoveredAccount[];
@@ -59,6 +60,16 @@ const AccountsList = ({ discoveredAccounts, onBeneficiaryUpdated }: AccountsList
                       status={account.beneficiaryStatus}
                       names={account.beneficiaryNames}
                       onUpdated={onBeneficiaryUpdated}
+                    />
+                  </div>
+                )}
+                {account.id && (
+                  <div className="flex justify-end">
+                    <ClosureChecklist
+                      accountId={account.id}
+                      institution={account.institution}
+                      checklist={account.closureChecklist}
+                      onGenerated={onBeneficiaryUpdated}
                     />
                   </div>
                 )}

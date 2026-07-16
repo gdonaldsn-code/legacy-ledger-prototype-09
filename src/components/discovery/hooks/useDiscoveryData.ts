@@ -13,6 +13,7 @@ export interface DiscoveredAccount {
   beneficiaryStatus?: "confirmed" | "needs_review" | "missing" | "unknown";
   beneficiaryNames?: string | null;
   beneficiaryLastReviewed?: string | null;
+  closureChecklist?: string[] | null;
 }
 
 export const useDiscoveryData = (isOpen: boolean) => {
