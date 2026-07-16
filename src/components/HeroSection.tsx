@@ -5,21 +5,15 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import DataVisualization from "./DataVisualization";
 import DiscoveryModal from "./discovery/DiscoveryModal";
-import LiveDemo from "./LiveDemo";
 import heroImage from "@/assets/hero-sunrise.jpg";
 
 const HeroSection = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [showReport, setShowReport] = useState(false);
-  const [showDemo, setShowDemo] = useState(false);
 
   const handleStartDiscovery = () => {
     setShowReport(true);
-  };
-
-  const handleViewDemo = () => {
-    setShowDemo(true);
   };
 
   return (
@@ -61,10 +55,6 @@ const HeroSection = () => {
                 <Button onClick={handleStartDiscovery} variant="hero" size="lg" className="group text-sm md:text-base px-6 md:px-8 py-3 md:py-4">
                   Start Discovery Scan
                   <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-                <Button onClick={handleViewDemo} variant="glass" size="lg" className="text-sm md:text-base px-6 md:px-8 py-3 md:py-4">
-                  <Shield className="mr-2 h-4 w-4 md:h-5 md:w-5" />
-                  View Live Demo
                 </Button>
               </div>
 
@@ -127,9 +117,6 @@ const HeroSection = () => {
       
       {/* Discovery Report Modal */}
       <DiscoveryModal isOpen={showReport} onClose={() => setShowReport(false)} />
-      
-      {/* Live Demo Modal */}
-      <LiveDemo isOpen={showDemo} onClose={() => setShowDemo(false)} />
     </section>
   );
 };

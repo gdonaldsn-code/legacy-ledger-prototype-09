@@ -80,7 +80,7 @@ const DiscoveryModal = ({ isOpen, onClose }: DiscoveryModalProps) => {
                   <span className="hidden sm:inline">Download Full Report</span>
                   <span className="sm:hidden">Download Report</span>
                 </Button>
-                <Button variant="outline" className="flex-1" onClick={() => alert('Contact our team to schedule a consultation')}>
+                <Button variant="outline" className="flex-1" onClick={() => window.open('https://calendly.com', '_blank')}>
                   <span className="hidden sm:inline">Schedule Consultation</span>
                   <span className="sm:hidden">Schedule Call</span>
                 </Button>
