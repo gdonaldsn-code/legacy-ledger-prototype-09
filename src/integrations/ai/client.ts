@@ -17,6 +17,19 @@ export const callAiAssistant = async <T = unknown>(
   });
 
   if (error) {
+    // supabase-js collapses non-2xx responses into a generic
+    // "Edge Function returned a non-2xx status code" message and puts the
+    // actual JSON body (our { error: "..." } payload) on error.context —
+    // read that so failures are actually debuggable instead of opaque.
+    const context = (error as { context?: Response }).context;
+    if (context) {
+      try {
+        const body = await context.clone().json();
+        throw new Error(body?.error ?? error.message ?? "AI request failed");
+      } catch {
+        // Body wasn't JSON — fall through to the generic message below.
+      }
+    }
     throw new Error(error.message ?? "AI request failed");
   }
 
