@@ -236,7 +236,7 @@ const PricingSection = () => {
                 { icon: Star, label: "Built around estate-planning best practices" }
               ].map((item, index) => (
                 <div key={index} className="flex flex-col items-center gap-3 group">
-                  <item.icon className="h-6 w-6 text-electric-blue group-hover:scale-110 transition-transform" />
+                  <item.icon className="h-6 w-6 text-blue-soft group-hover:text-white group-hover:scale-110 transition-transform" />
                   <span className="text-blue-soft text-sm font-medium group-hover:text-white transition-colors">
                     {item.label}
                   </span>
