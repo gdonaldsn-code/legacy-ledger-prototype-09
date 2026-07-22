@@ -16,10 +16,14 @@
 //   - closure-checklist:  generates a generic step-by-step account-closure
 //                         checklist for one discovered account, cached on
 //                         the row so we don't re-call the model every view.
-//   - chat:               a guidance assistant grounded in the caller's own
-//                         profile + discovered accounts (fetched server-side
-//                         via their own auth token, never trusted from the
-//                         client) to answer "what do I do next" questions.
+//   - chat:               a guidance assistant. If the caller is logged in,
+//                         it's grounded in their own profile + discovered
+//                         accounts (fetched server-side via their auth
+//                         token, never trusted from the client). If not
+//                         logged in (e.g. a visitor on the homepage), it
+//                         still answers general product/probate questions
+//                         with no personal data attached — this is the only
+//                         action that works without authentication.
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 
@@ -83,45 +87,46 @@ Deno.serve(async (req) => {
       throw new Error("ANTHROPIC_API_KEY is not configured for this Supabase project.");
     }
 
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Missing Authorization header" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    const body = await req.json();
+    const action = body.action as string;
 
     // User-scoped client: every query through this respects RLS as the
     // calling user, so we never need to manually check row ownership.
-    const supabaseUser = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
+    // Only built when there's an Authorization header to try — chat is
+    // allowed to proceed without one (anonymous, general guidance only).
+    const authHeader = req.headers.get("Authorization");
+    let supabaseUser: ReturnType<typeof createClient> | null = null;
+    let user: { id: string; email?: string } | null = null;
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabaseUser.auth.getUser();
+    if (authHeader) {
+      supabaseUser = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+        { global: { headers: { Authorization: authHeader } } }
+      );
+      const { data, error: userError } = await supabaseUser.auth.getUser();
+      if (!userError && data.user) {
+        user = data.user;
+      }
+    }
 
-    if (userError || !user) {
+    if (action !== "chat" && (!user || !supabaseUser)) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const body = await req.json();
-    const action = body.action as string;
-
     if (action === "analyze-document") {
+      // Guaranteed non-null by the check above (this action requires auth).
+      const authedUser = user!;
       const { bucket, path, documentContext } = body as {
         bucket: string;
         path: string;
         documentContext: "death_certificate" | "letters_testamentary";
       };
 
-      if (bucket !== "executor-documents" || !path.startsWith(`${user.id}/`)) {
+      if (bucket !== "executor-documents" || !path.startsWith(`${authedUser.id}/`)) {
         return new Response(JSON.stringify({ error: "Invalid document reference" }), {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -174,9 +179,11 @@ Deno.serve(async (req) => {
     }
 
     if (action === "closure-checklist") {
+      // Guaranteed non-null by the check above (this action requires auth).
+      const authedClient = supabaseUser!;
       const { accountId } = body as { accountId: string };
 
-      const { data: account, error: accountError } = await supabaseUser
+      const { data: account, error: accountError } = await authedClient
         .from("discovered_accounts")
         .select("*")
         .eq("id", accountId)
@@ -211,7 +218,7 @@ Give a short numbered checklist (5-7 steps max) of what they'll typically need t
         .map((line: string) => line.trim())
         .filter((line: string) => line.length > 0);
 
-      await supabaseUser
+      await authedClient
         .from("discovered_accounts")
         .update({ closure_checklist: steps, closure_checklist_generated_at: new Date().toISOString() })
         .eq("id", accountId);
@@ -227,25 +234,37 @@ Give a short numbered checklist (5-7 steps max) of what they'll typically need t
         history: Array<{ role: "user" | "assistant"; content: string }>;
       };
 
-      const [{ data: profile }, { data: accounts }] = await Promise.all([
-        supabaseUser.from("profiles").select("*").eq("id", user.id).single(),
-        supabaseUser.from("discovered_accounts").select("*").eq("user_id", user.id),
-      ]);
+      const baseIntro = `You are the guidance assistant for Legacy Ledger, a product that helps people either (a) plan their own digital estate ahead of time, or (b) find and close a deceased loved one's financial accounts as executor. Be warm, concise, and practical — this is not the place for hype or long preambles. You are not a lawyer; for anything jurisdiction-specific, say so and suggest confirming with an attorney or the institution directly.`;
 
-      const accountsSummary = (accounts ?? [])
-        .map(
-          (a) =>
-            `- ${a.institution} (${a.account_type}), status: ${a.status}, beneficiary: ${a.beneficiary_status}`
-        )
-        .join("\n");
+      let systemPrompt: string;
 
-      const systemPrompt = `You are the guidance assistant inside Legacy Ledger, a product that helps people either (a) plan their own digital estate ahead of time, or (b) find and close a deceased loved one's financial accounts as executor. You are talking to a real user, possibly grieving. Be warm, concise, and practical — this is not the place for hype or long preambles. You are not a lawyer; for anything jurisdiction-specific, say so and suggest confirming with an attorney or the institution directly. Do not fabricate account details beyond what's given below.
+      if (user && supabaseUser) {
+        // Logged in: ground the answer in their real data, fetched
+        // server-side so the client can't spoof what accounts exist.
+        const [{ data: profile }, { data: accounts }] = await Promise.all([
+          supabaseUser.from("profiles").select("*").eq("id", user.id).single(),
+          supabaseUser.from("discovered_accounts").select("*").eq("user_id", user.id),
+        ]);
+
+        const accountsSummary = (accounts ?? [])
+          .map(
+            (a) =>
+              `- ${a.institution} (${a.account_type}), status: ${a.status}, beneficiary: ${a.beneficiary_status}`
+          )
+          .join("\n");
+
+        systemPrompt = `${baseIntro} You're talking to a signed-in user, possibly grieving. Do not fabricate account details beyond what's given below.
 
 User's situation:
 - Path: ${profile?.intent ?? "unspecified"}
 - Executor verification status: ${profile?.verification_status ?? "not_started"}
 - Discovered accounts:
 ${accountsSummary || "(none yet)"}`;
+      } else {
+        // Anonymous visitor (e.g. on the homepage, not registered yet):
+        // general product/probate guidance only, no personal data to draw on.
+        systemPrompt = `${baseIntro} You're talking to a visitor on the public website who has not registered or logged in yet, so you have no data about them — don't imply you do. Answer general questions about how Legacy Ledger works, pricing (AI Discovery Report: $299 one-time; Concierge Execution: $699 full-service; Legacy Protection: $5-10/month), and general estate/probate topics. If they're ready to get started, point them to registering, or to /plan-ahead or /find-accounts depending on whether they're planning ahead or need help after a loss.`;
+      }
 
       const reply = await callClaude(anthropicKey, {
         model: ANTHROPIC_MODEL,

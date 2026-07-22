@@ -6,6 +6,7 @@ import CredibilitySection from "@/components/CredibilitySection";
 import WhyLegacySection from "@/components/WhyLegacySection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import AIGuidanceChat from "@/components/AIGuidanceChat";
 
 const Index = () => {
   return (
@@ -18,6 +19,7 @@ const Index = () => {
       <WhyLegacySection />
       <CTASection />
       <Footer />
+      <AIGuidanceChat />
     </div>
   );
 };

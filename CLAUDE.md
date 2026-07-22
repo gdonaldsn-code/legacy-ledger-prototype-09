@@ -92,10 +92,13 @@ secret:
 - `closure-checklist` — generates a short account-closure checklist for one
   `discovered_accounts` row, cached in `closure_checklist` /
   `closure_checklist_generated_at`. Wired into `discovery/ClosureChecklist.tsx`.
-- `chat` — a guidance assistant grounded in the caller's own profile +
-  discovered accounts (fetched server-side via their auth token, never
-  trusted from the client). Session-only history, no persistence yet. Wired
-  into `AIGuidanceChat.tsx`, mounted on the Dashboard.
+- `chat` — a guidance assistant. Logged-in users get answers grounded in
+  their own profile + discovered accounts (fetched server-side via their
+  auth token, never trusted from the client). It's the only action that also
+  works without authentication, for anonymous visitors — in that case it
+  answers general product/probate questions with no personal data. Session-
+  only history, no persistence yet. Wired into `AIGuidanceChat.tsx`, mounted
+  on both the homepage (`Index.tsx`) and the Dashboard.
 
 Deploy/config (one-time, run by a human with dashboard access):
 ```
